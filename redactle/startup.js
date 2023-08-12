@@ -87,11 +87,26 @@ window.onload = function () {
         $('#autoPlural').click(function () {
             if ($('#autoPlural').is(':checked')) {
                 pluralizing = true;
-                SaveProgress();
             } else {
                 pluralizing = false;
-                SaveProgress();
             }
+        });
+    });
+
+    $(function () {
+        $('#selectArticle').on("change", function () {
+            if ($('#selectArticle').val() === 'custom') {
+                selectedArticles = 'custom';
+            } else {
+                selectedArticles = 'standard';
+            }
+        });
+    });
+
+    $(function () {
+        $('#streamName').on("change", function () {
+            streamName = $('#streamName').val();
+            SaveProgress();
         });
     });
 
@@ -122,6 +137,8 @@ window.onload = function () {
         $(this).click(function () {
             settingsModal.hide();
             document.querySelector("body").style.overflow = "auto";
+            connectStream();
+            SaveProgress();
         });
     });
 
@@ -139,7 +156,7 @@ window.onload = function () {
 
     $("#newGame").click(function () {
         newGame();
-    })
+    });
 
     window.onclick = function (event) {
         if (event.target == document.getElementById("infoModal")) {
@@ -149,17 +166,24 @@ window.onload = function () {
         if (event.target == document.getElementById("settingsModal")) {
             settingsModal.hide();
             document.querySelector("body").style.overflow = "auto";
+            connectStream();
         }
         if (event.target == document.getElementById("statsModal")) {
             statsModal.hide();
             document.querySelector("body").style.overflow = "auto";
         }
-    },
+    };
 
-	ComfyJS.onChat = (user, message, flags, self, extra ) => {
+    ComfyJS.onChat = (user, message, flags, self, extra) => {
         const firstWord = new Array(message.split(' ')[0]);
         EnterGuess(firstWord);
-	},
-	
-    ComfyJS.Init("Stoneeo");
+    };
+
+    function connectStream() {
+        if (save.prefs.streamName) {
+            ComfyJS.Init(save.prefs.streamName);
+        }
+    }
+
+    connectStream();
 }

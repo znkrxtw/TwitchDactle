@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html land="en">
+
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -10,24 +11,17 @@
     <link href="redactle/bootstrap.min.css" rel="stylesheet">
 
     <link href="redactle/styles.css" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://www.redactle.com/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.redactle.com/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.redactle.com/favicon-16x16.png">
-    <link rel="icon" href="https://www.redactle.com/favicon.ico?" type="image/png">
-    <!--<link rel="manifest" href="https://www.redactle.com/site.webmanifest">-->
-    <link rel="mask-icon" href="https://www.redactle.com/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Try to find the title of a random Wikipedia article by guessing words to reveal them on the page. New puzzle daily!">
+    <meta name="description"
+        content="Try to find the title of a random Wikipedia article by guessing words to reveal them on the page. New puzzle daily!">
     <meta property="og:title" content="Redactle - A daily puzzle game">
     <meta property="og:description" content="Try to find the title of a random Wikipedia article.">
     <meta property="og:url" content="https://www.redactle.com/">
     <meta property="og:image" content="https://www.redactle.com/card.png">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Redactle - A daily web browser puzzle game">
-    <meta name="twitter:description" content="Try to find the title of a random Wikipedia article by guessing words to reveal them on the page. New puzzle daily!">
-    <meta name="twitter:image" content="https://www.redactle.com/twitterCard.png">
 
     <script src="redactle/comfy.min.js"></script>
     <script src="redactle/jquery-3.6.0.min.js"></script>
@@ -43,10 +37,12 @@
     </script>
     <title>Redactle - A daily puzzle game</title>
 </head>
+
 <body style="overflow: auto;" class="">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="">
         <span class="navbar-brand mb-0 h1 mx-4">Redactle</span>
-        <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="">
+        <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse ms-5" id="navbarNav">
@@ -82,7 +78,8 @@
     <div class="bg-dark fixed-bottom" id="inputHolder" style="">
         <div class="input-group m-3" id="inGrp">
             <button class="btn btn-outline-secondary" type="button" id="backToTop">▲ Top</button>
-            <input type="text" class="form-text-lg" aria-label="Text input" autofocus="" autocomplete="off" placeholder="Guess" id="userGuess">
+            <input type="text" class="form-text-lg" aria-label="Text input" autofocus="" autocomplete="off"
+                placeholder="Guess" id="userGuess">
             <button class="btn btn-outline-secondary" type="button" id="submitGuess">Guess</button>
         </div>
     </div>
@@ -95,21 +92,25 @@
     </div>
 
 
-    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content text-dark">
                 <div class="modal-header">
                     <h5 class="modal-title" id="infoModalLabel">Welcome to Redactle!</h5>
-                    <button type="button" class="btn-close closeInfo" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close closeInfo" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>
                         Redactle is a daily browser game where the user tries
                         to determine the subject of a random obfuscated Wikipedia article,
-                        chosen from <a href="https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/4" target="_blank">Wikipedia's 10,000 Vital Articles (Level 4).</a>
+                        chosen from <a href="https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/4"
+                            target="_blank">Wikipedia's 10,000 Vital Articles (Level 4).</a>
                     </p>
                     <p>A new puzzle will be available every day at 11:00 AM CDT (16:00 UTC).</p>
-                    <p>Follow Redactle on Twitter <a href="https://www.twitter.com/RedactleGame" target="_blank">@RedactleGame</a>.</p>
+                    <p>Follow Redactle on Twitter <a href="https://www.twitter.com/RedactleGame"
+                            target="_blank">@RedactleGame</a>.</p>
                     <p>Created by <a href="https://www.twitter.com/jhntrnr" target="_blank">John Turner</a></p>
                     <p id="yesterday">The answer to yesterday's Redactle was: empathy</p>
                     <h5>How to Play</h5>
@@ -126,7 +127,8 @@
                             revealed in the article page. Some punctuation occasionally escapes
                             Redactle's filter and becomes redacted.
                         </li>
-                        <li>Guesses are case <i>insensitive</i>, and letters with diacritics (é, ü, etc) are considered to not have those diacritics.</li>
+                        <li>Guesses are case <i>insensitive</i>, and letters with diacritics (é, ü, etc) are considered
+                            to not have those diacritics.</li>
                         <li>
                             Shift+Enter will attempt to automatically
                             pluralize or singularize your guess. There are certain edge cases (e.g.
@@ -154,7 +156,8 @@
                         anonymized.
                     </p>
                     <p>Redactle does not collect any information regarding a user's actual guesses.</p>
-                    <p>For more information, view Redactle's <a href="https://www.redactle.com/privacy.html">Privacy Policy.</a></p>
+                    <p>For more information, view Redactle's <a href="https://www.redactle.com/privacy.html">Privacy
+                            Policy.</a></p>
                     <p class="text-secondary">Version 1.0</p>
                 </div>
                 <div class="modal-footer">
@@ -170,13 +173,15 @@
             <div class="modal-content text-dark">
                 <div class="modal-header">
                     <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                    <button type="button" class="btn-close closeSettings" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close closeSettings" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div>
                         <div>
                             <label>
-                                <input name="checkbox" type="checkbox" id="hideZero" class="configCheck"> Hide Guesses with 0 Hits<br><br>
+                                <input name="checkbox" type="checkbox" id="hideZero" class="configCheck"> Hide Guesses
+                                with 0 Hits<br><br>
                             </label>
                         </div>
                         <div>
@@ -185,6 +190,19 @@
                                 Attempt to automatically pluralize and singularize guesses. There are
                                 certain edge cases (e.g. guessing a nonsense word like "asdf") where
                                 this will submit nonsense guesses.<br><br>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <select name="articles" id="selectArticle">
+                                    <option value="standard">Top 10000 Articles</option>
+                                    <option value="custom">Custom Articles</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div>
+                            <label>Twitch Name:
+                                <input name="streamName" id="streamName" type="text">
                             </label>
                         </div>
                     </div>
@@ -202,7 +220,8 @@
             <div class="modal-content text-dark">
                 <div class="modal-header">
                     <h5 class="modal-title" id="statsModalLabel">Personal Stats</h5>
-                    <button type="button" class="btn-close closeStats" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close closeStats" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="statsHolder">
@@ -232,8 +251,10 @@
     <script type="text/javascript" src="redactle/gameList.js"></script>
     <script type="text/javascript" src="redactle/startup.js"></script>
     <script type="text/javascript" src="redactle/articleNames.js"></script>
+    <script type="text/javascript" src="redactle/customArticleNames.js"></script>
     <script type="text/javascript" src="redactle/index.js"></script>
 
 
 </body>
+
 </html>

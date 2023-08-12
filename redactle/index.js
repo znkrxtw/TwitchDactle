@@ -1,6 +1,3 @@
-//import {articles} from "/articleNames.js"
-
-
 var wikiHolder = document.getElementById("wikiHolder")
 var guessLogBody = document.getElementById("guessLogBody");
 var statLogBody = document.getElementById("statsTable");
@@ -11,6 +8,8 @@ var ansStr;
 var guessCounter = 0;
 var hidingZero = false;
 var hidingLog = false;
+var selectedArticles = 'standard';
+var streamName = "";
 var currentlyHighlighted;
 var gameWins = [];
 var gameScores = [];
@@ -30,10 +29,10 @@ var redactleIndex;
 var yesterday;
 var articleName;
 
-function uuidv4(){
-    return ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
+function uuidv4() {
+    return ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
 }
 
 function median(numbers) {
@@ -49,111 +48,57 @@ function median(numbers) {
 
 const average = (array) => array.reduce((a, b) => a + b) / array.length;
 
-function LoadSave(){
-    
-    if(localStorage.getItem("redactleSavet") === null){
+function LoadSave() {
+
+    if (localStorage.getItem("redactleSavet") === null) {
         localStorage.clear();
         playerID = uuidv4();
-        articleName = articles[Math.floor(Math.random() * articles.length)];
+        articleName = getArticleName();
         redactleIndex = 0;
-        save = JSON.parse(JSON.stringify({"saveData":{redactleIndex,articleName,guessedWords,gameWins,gameScores,gameAccuracy,gameAnswers},"prefs":{hidingZero,hidingLog,pluralizing},"id":{playerID}}));
-    } else{
+        save = JSON.parse(JSON.stringify({ "saveData": { redactleIndex, articleName, guessedWords, gameWins, gameScores, gameAccuracy, gameAnswers }, "prefs": { hidingZero, hidingLog, pluralizing, selectedArticles, streamName }, "id": { playerID } }));
+    } else {
         save = JSON.parse(localStorage.getItem("redactleSavet"));
     }
-    localStorage.setItem("redactleSavet",JSON.stringify(save));
+    localStorage.setItem("redactleSavet", JSON.stringify(save));
+
     playerID = save.id.playerID;
-    /*
-    $.ajax({
-        type: "GET",
-        url: "/ses.php",
-        dataType:'text',
-        success: function(data){
-            startMetrics = JSON.parse(data);
-            token = startMetrics.token;
-            redactleIndex = startMetrics.redactleIndex;
-            yesterday = startMetrics.yesterday;
-            hidingZero = save.prefs.hidingZero;
-            hidingLog = save.prefs.hidingLog;
-            pluralizing = save.prefs.pluralizing;
-            gameWins = save.saveData.gameWins;
-            gameScores = save.saveData.gameScores;
-            gameAccuracy = save.saveData.gameAccuracy;
-            gameAnswers = save.saveData.gameAnswers;
-            var gameDelta = redactleIndex - save.saveData.gameWins.length;
-            
-            for (var i = 0; i < gameDelta; i++){
-                gameWins.push(0);
-                gameScores.push(0);
-                gameAccuracy.push(0);
-                gameAnswers.push('');
-            }
-            if(save.saveData.redactleIndex != redactleIndex){
-                save.saveData.redactleIndex = redactleIndex;
-                save.saveData.guessedWords = guessedWords;
-            } else{
-                guessedWords = save.saveData.guessedWords;
-            }
-            SaveProgress();
-            fetchData(false,startMetrics.article);
-        },complete: function(){
-            $.ajax({
-                type: "POST",
-                url: "/init.php",
-                dataType:'text',
-                data:{
-                    'playerID': playerID,
-                    'currentRedactle': redactleIndex,
-                    'token': token
-                },success: function(data){
-                }
-            })
-        }}
-    );
-    */
-    
     articleName = save.saveData.articleName;
     hidingZero = save.prefs.hidingZero;
     hidingLog = save.prefs.hidingLog;
+    selectedArticles = save.prefs.selectedArticles;
     pluralizing = save.prefs.pluralizing;
+    streamName = save.prefs.streamName;
     redactleIndex = save.saveData.redactleIndex;
     gameWins = save.saveData.gameWins;
     gameScores = save.saveData.gameScores;
     gameAccuracy = save.saveData.gameAccuracy;
     gameAnswers = save.saveData.gameAnswers;
     var gameDelta = redactleIndex - save.saveData.gameWins.length;
-    for (var i = 0; i < gameDelta; i++){
-          gameWins.push(0);
-          gameScores.push(0);
-          gameAccuracy.push(0);
-          gameAnswers.push('');
+    for (var i = 0; i < gameDelta; i++) {
+        gameWins.push(0);
+        gameScores.push(0);
+        gameAccuracy.push(0);
+        gameAnswers.push('');
     }
-    
+
     guessedWords = save.saveData.guessedWords;
-    /*
-    if(save.saveData.redactleIndex != redactleIndex){
-          save.saveData.redactleIndex = redactleIndex;
-          save.saveData.guessedWords = guessedWords;
-    } else{
-          guessedWords = save.saveData.guessedWords;
-    }
-    */
-    
+
     SaveProgress();
-    
-    fetchData(true,articleName);
+
+    fetchData(true, articleName);
 }
 
 
 async function fetchData(retry, artStr) {
-    
-    if(retry){
+
+    if (retry) {
         var article = artStr;
-        
-    } else{
+
+    } else {
         var article = atob(artStr);
     }
     return await fetch('https://en.wikipedia.org/w/api.php?action=parse&format=json&page=' + article + '&prop=text&formatversion=2&origin=*')
-       .then(resp => {
+        .then(resp => {
             if (!resp.ok) {
                 throw `Server error: [${resp.status}] [${resp.statusText}] [${resp.url}]`;
             }
@@ -161,63 +106,63 @@ async function fetchData(retry, artStr) {
         })
         .then(receivedJson => {
             conting = true;
-            var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g,"").replace(/\<small\>/g,'').replace(/\<\/small\>/g,'').replace(/–/g,'-').replace(/<audio.*<\/audio>/g,"");
+            var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
             wikiHolder.style.display = "none";
             wikiHolder.innerHTML = cleanText;
             var redirecting = document.getElementsByClassName('redirectMsg');
             if (redirecting.length > 0) {
-                var redirURL = $('.redirectText')[0].firstChild.firstChild.innerHTML.replace(/ /g,"_");
+                var redirURL = $('.redirectText')[0].firstChild.firstChild.innerHTML.replace(/ /g, "_");
                 conting = false;
                 fetchData(!conting, redirURL)
             }
-            if(conting){
-                if(document.getElementById("See_also") != null){
+            if (conting) {
+                if (document.getElementById("See_also") != null) {
                     var seeAlso = document.getElementById("See_also").parentNode;
-                } else if(document.getElementById("Notes") != null){
+                } else if (document.getElementById("Notes") != null) {
                     var seeAlso = document.getElementById("Notes").parentNode;
-                } else{
+                } else {
                     var seeAlso = document.getElementById("References").parentNode;
-                } 
+                }
                 var e = document.getElementsByClassName('mw-parser-output');
                 alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
-                for(var i = alsoIndex; i < e[0].children.length; i++){
+                for (var i = alsoIndex; i < e[0].children.length; i++) {
                     e[0].removeChild(e[0].children[i]);
                 }
                 var all_bad_elements = wikiHolder.querySelectorAll("[rel='mw-deduplicated-inline-style'], [title='Name at birth'], [aria-labelledby='micro-periodic-table-title'], .barbox, .wikitable, .clade, .Expand_section, .nowrap, .IPA, .thumb, .mw-empty-elt, .mw-editsection, .nounderlines, .nomobile, .searchaux, #toc, .sidebar, .sistersitebox, .noexcerpt, #External_links, #Further_reading, .hatnote, .haudio, .portalbox, .mw-references-wrap, .infobox, .unsolved, .navbox, .metadata, .refbegin, .reflist, .mw-stack, #Notes, #References, .reference, .quotebox, .collapsible, .uncollapsed, .mw-collapsible, .mw-made-collapsible, .mbox-small, .mbox, #coordinates, .succession-box, .noprint, .mwe-math-element, .cs1-ws-icon");
-    
-                for(var i=0; i<all_bad_elements.length; i++){
+
+                for (var i = 0; i < all_bad_elements.length; i++) {
                     all_bad_elements[i].remove();
                 }
-                
+
                 var b = document.getElementsByTagName('b');
-                while(b.length) {
-                    var parent = b[ 0 ].parentNode;
-                    while( b[ 0 ].firstChild ) {
-                        parent.insertBefore(  b[ 0 ].firstChild, b[ 0 ] );
+                while (b.length) {
+                    var parent = b[0].parentNode;
+                    while (b[0].firstChild) {
+                        parent.insertBefore(b[0].firstChild, b[0]);
                     }
-                    parent.removeChild( b[ 0 ] );
+                    parent.removeChild(b[0]);
                 }
                 var a = wikiHolder.getElementsByTagName('a');
-                while(a.length) {
-                    var parent = a[ 0 ].parentNode;
-                    while( a[ 0 ].firstChild ) {
-                        parent.insertBefore(  a[ 0 ].firstChild, a[ 0 ] );
+                while (a.length) {
+                    var parent = a[0].parentNode;
+                    while (a[0].firstChild) {
+                        parent.insertBefore(a[0].firstChild, a[0]);
                     }
-                    parent.removeChild( a[ 0 ] );
+                    parent.removeChild(a[0]);
                 }
                 var bq = document.getElementsByTagName('blockquote');
-                for(var i=0; i<bq.length; i++){
+                for (var i = 0; i < bq.length; i++) {
                     bq[i].innerHTML = bq[i].innerHTML.replace(/<[^>]*>?/gm, '');
                 }
                 var s = document.getElementsByTagName('sup')
-                while(s.length) {
+                while (s.length) {
                     s[0].remove();
                 }
                 var ex = document.getElementsByClassName('excerpt');
-                while(ex.length) {
+                while (ex.length) {
                     ex[0].remove();
                 }
-                $(e[0]).find('[title]').each(function(){
+                $(e[0]).find('[title]').each(function () {
                     this.removeAttribute('title');
                 })
                 $(e[0]).find('.mw-headline').contents().unwrap();
@@ -227,26 +172,26 @@ async function fetchData(retry, artStr) {
                 e[0].prepend(titleHolder);
                 ansStr = titleTxt.replace(/ *\([^)]*\) */g, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                 ans = ansStr.match(/\b(\w+'\w+|\w+)\b/g);
-                ans = ans.filter( function( el ) {
-                    return commonWords.indexOf( el ) < 0;
-                  } );
-                e[0].innerHTML = e[0].innerHTML.replace(/\(; /g,'(').replace(/\(, /g,'(').replace(/\(, /g,'(').replace(/: ​;/g,';').replace(/ \(\) /g,' ').replace(/<\/?span[^>]*>/g,"");;
+                ans = ans.filter(function (el) {
+                    return commonWords.indexOf(el) < 0;
+                });
+                e[0].innerHTML = e[0].innerHTML.replace(/\(; /g, '(').replace(/\(, /g, '(').replace(/\(, /g, '(').replace(/: ​;/g, ';').replace(/ \(\) /g, ' ').replace(/<\/?span[^>]*>/g, "");;
                 $(e[0]).find('*').removeAttr('class').removeAttr('style');
-                
-                $(e[0]).find("p, blockquote, h1, h2, table, li, i, cite, span").contents().filter(function(i,el){
-                    return el.nodeType ===3;
-                }).each(function(i,el){
+
+                $(e[0]).find("p, blockquote, h1, h2, table, li, i, cite, span").contents().filter(function (i, el) {
+                    return el.nodeType === 3;
+                }).each(function (i, el) {
                     var $el = $(el);
                     var replaced = $el.text().replace(/([\.,:()\[\]?!;`\~\-\u2013\—&*"])/g, '<span class="punctuation">$1</span>');
                     el.replaceWith(replaced);
                 });
-                
-                e[0].innerHTML = e[0].innerHTML.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/(<style.*<\/style>)/g, "").replace(/(<span class="punctuation">.<\/span>)|(^|<\/?[^>]+>|\s+)|([^\s<]+)/g, '$1$2<span class="innerTxt">$3</span>').replace('<<span class="innerTxt">h1>','<h1><span class="innerTxt">');
+
+                e[0].innerHTML = e[0].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/(<style.*<\/style>)/g, "").replace(/(<span class="punctuation">.<\/span>)|(^|<\/?[^>]+>|\s+)|([^\s<]+)/g, '$1$2<span class="innerTxt">$3</span>').replace('<<span class="innerTxt">h1>', '<h1><span class="innerTxt">');
                 $(e[0]).find('*:empty').remove();
                 wikiHolder.innerHTML = wikiHolder.innerHTML.replace(/<!--(?!>)[\S\s]*?-->/g, '');
-                $(".mw-parser-output span").not(".punctuation").each(function() {
+                $(".mw-parser-output span").not(".punctuation").each(function () {
                     var txt = this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                    if(!commonWords.includes(txt)){
+                    if (!commonWords.includes(txt)) {
                         this.classList.toggle('baffled');
                         let b = baffle(this).once().set({
                             characters: 'abcd'
@@ -254,34 +199,44 @@ async function fetchData(retry, artStr) {
                         baffled.push([txt, b]);
                     }
                 });
-    
-                if(guessedWords.length > 0){
-                    for(var i = 0; i < guessedWords.length; i++){
+
+                if (guessedWords.length > 0) {
+                    for (var i = 0; i < guessedWords.length; i++) {
                         guessCounter += 1;
                         PerformGuess(guessedWords[i][0], true);
                     }
                 }
-                
-                if(pluralizing){
+
+                if (pluralizing) {
                     document.getElementById("autoPlural").checked = true;
-                } else{
+                } else {
                     document.getElementById("autoPlural").checked = false;
                 }
-    
-                if(hidingZero){
+
+                if (hidingZero) {
                     document.getElementById("hideZero").checked = true;
                     HideZero();
-                } else{
+                } else {
                     document.getElementById("hideZero").checked = false;
                     ShowZero();
                 }
-    
+
+                if(selectedArticles === 'custom') {
+                    document.getElementById("selectArticle").value = 'custom';
+                    SelectArticlesCustom();
+                } else {                    
+                    document.getElementById("selectArticle").value = 'standard';
+                    SelectArticlesStandard();
+                }
+
+                document.getElementById("streamName").value = streamName;
+
                 // TODO maybe fix later
                 //if(redactleIndex > 0){
                 //    document.getElementById("yesterday").innerHTML = `The answer to yesterday's Redactle was: ${atob(yesterday).replace(/ *\([^)]*\) */g, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/_/g," ").toLowerCase()}`;
                 //}
-                
-                
+
+
                 wikiHolder.style.display = "flex";
             }
         })
@@ -292,139 +247,139 @@ async function fetchData(retry, artStr) {
 }
 LoadSave();
 
-function PerformGuess(guessedWord, populate){
+function PerformGuess(guessedWord, populate) {
     clickThruIndex = 0;
     RemoveHighlights(false);
-    var normGuess = guessedWord.normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase();
-    if(commonWords.includes(normGuess)){
+    var normGuess = guessedWord.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    if (commonWords.includes(normGuess)) {
 
     }
-    else{
+    else {
         var alreadyGuessed = false;
-        for(var i=0; i<guessedWords.length; i++){
-            if(guessedWords[i][0] == normGuess){
+        for (var i = 0; i < guessedWords.length; i++) {
+            if (guessedWords[i][0] == normGuess) {
                 var alreadyGuessed = true;
             }
         }
-        if(!alreadyGuessed || populate){
+        if (!alreadyGuessed || populate) {
             var numHits = 0;
-            for(var i = 0; i < baffled.length; i++){
-                if(baffled[i][0] == normGuess){
+            for (var i = 0; i < baffled.length; i++) {
+                if (baffled[i][0] == normGuess) {
                     baffled[i][1].reveal();
                     baffled[i][1].elements[0].element.classList.remove("baffled");
-                    baffled[i][1].elements[0].element.setAttribute("data-word",normGuess);
+                    baffled[i][1].elements[0].element.setAttribute("data-word", normGuess);
                     numHits += 1;
-                    if(!populate){
+                    if (!populate) {
                         baffled[i][1].elements[0].element.classList.add("highlighted");
                         currentlyHighlighted = normGuess;
                     }
                 }
             }
             save.saveData.guessedWords = guessedWords;
-            if(!populate){
+            if (!populate) {
                 guessCounter += 1;
-                guessedWords.push([normGuess,numHits,guessCounter]);
+                guessedWords.push([normGuess, numHits, guessCounter]);
                 SaveProgress();
             }
-            LogGuess([normGuess,numHits,guessCounter], populate);
-        } else{
-            $("tr[data-guess='"+normGuess+"']").addClass("table-secondary");
-            $("tr[data-guess='"+normGuess+"']")[0].scrollIntoView();
+            LogGuess([normGuess, numHits, guessCounter], populate);
+        } else {
+            $("tr[data-guess='" + normGuess + "']").addClass("table-secondary");
+            $("tr[data-guess='" + normGuess + "']")[0].scrollIntoView();
             currentlyHighlighted = normGuess;
-            $('.innerTxt').each(function(){
-                if(this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase() == normGuess){
+            $('.innerTxt').each(function () {
+                if (this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() == normGuess) {
                     this.classList.add('highlighted');
                 }
             });
         }
-        if(ans.includes(normGuess)){
-            ans = ans.filter(function(e) { return e !== normGuess })
+        if (ans.includes(normGuess)) {
+            ans = ans.filter(function (e) { return e !== normGuess })
         }
-        if(ans.length == 0){
+        if (ans.length == 0) {
             WinRound(populate);
         }
     }
-    document.getElementById("userGuess").value='';
+    document.getElementById("userGuess").value = '';
 }
 
-function LogGuess(guess, populate){
-    if(hidingZero){
+function LogGuess(guess, populate) {
+    if (hidingZero) {
         HideZero();
     }
     var newRow = guessLogBody.insertRow(0);
     newRow.class = 'curGuess';
-    newRow.setAttribute('data-guess',guess[0]);
-    if(!populate){
+    newRow.setAttribute('data-guess', guess[0]);
+    if (!populate) {
         newRow.classList.add('table-secondary');
     }
-    if(guess[1] > 0){
+    if (guess[1] > 0) {
         hitCounter += 1;
     }
-    if(!pageRevealed){
-        currentAccuracy = ((hitCounter / guessedWords.length)*100).toFixed(2);
+    if (!pageRevealed) {
+        currentAccuracy = ((hitCounter / guessedWords.length) * 100).toFixed(2);
     }
-    if(guess[1] > 0){
-        $(newRow).on('click', function(e) {
+    if (guess[1] > 0) {
+        $(newRow).on('click', function (e) {
             e.preventDefault();
-            var inTxt = this.getElementsByTagName('td')[1].innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase();
-            allInstances = wikiHolder.querySelectorAll('[data-word="'+inTxt+'"]');
-            if(currentlyHighlighted == null){
+            var inTxt = this.getElementsByTagName('td')[1].innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            allInstances = wikiHolder.querySelectorAll('[data-word="' + inTxt + '"]');
+            if (currentlyHighlighted == null) {
                 clickThruIndex = 0;
                 currentlyHighlighted = inTxt;
                 this.classList.add('table-secondary');
-                $('.innerTxt').each(function(){
-                    if(this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase() == currentlyHighlighted){
+                $('.innerTxt').each(function () {
+                    if (this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() == currentlyHighlighted) {
                         $(this).addClass('highlighted');
                     }
                 });
-            } else{
-                if(inTxt == currentlyHighlighted){
-                    
-                } else{
+            } else {
+                if (inTxt == currentlyHighlighted) {
+
+                } else {
                     clickThruIndex = 0;
                     RemoveHighlights(false);
                     this.classList.add('table-secondary');
-                    $('.innerTxt').each(function(){
-                        if(this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g,"").toLowerCase() == inTxt){
+                    $('.innerTxt').each(function () {
+                        if (this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() == inTxt) {
                             this.classList.add('highlighted');
                         }
                     })
-                    currentlyHighlighted = inTxt;  
+                    currentlyHighlighted = inTxt;
                 }
             }
-            $('.superHighlighted').each(function(){
+            $('.superHighlighted').each(function () {
                 this.classList.remove('superHighlighted');
             });
             allInstances[clickThruIndex % allInstances.length].classList.add('superHighlighted');
             allInstances[clickThruIndex % allInstances.length].scrollIntoView({
-            behavior: 'auto',
-            block: 'center',
-            inline: 'end'
+                behavior: 'auto',
+                block: 'center',
+                inline: 'end'
             });
             clickThruIndex += 1;
         });
-    } else{
-        $(newRow).on('click', function(e) {
+    } else {
+        $(newRow).on('click', function (e) {
             RemoveHighlights(true);
         });
     }
-    newRow.innerHTML = '<td>'+guess[2]+'</td><td>'+guess[0]+'</td><td class="tableHits">'+guess[1]+'</td>';
-    if(!populate){
+    newRow.innerHTML = '<td>' + guess[2] + '</td><td>' + guess[0] + '</td><td class="tableHits">' + guess[1] + '</td>';
+    if (!populate) {
         newRow.scrollIntoView({
             behavior: 'auto',
             block: 'center',
             inline: 'end'
-            });
+        });
     }
-    
+
 }
 
 
-function WinRound(populate){
+function WinRound(populate) {
     document.getElementById("userGuess").disabled = true;
-    if(!pageRevealed){
+    if (!pageRevealed) {
         RevealPage();
-        if(!populate){
+        if (!populate) {
             gameScores[redactleIndex] = guessedWords.length;
             gameAccuracy[redactleIndex] = currentAccuracy;
             gameAnswers[redactleIndex] = ansStr;
@@ -432,11 +387,11 @@ function WinRound(populate){
         }
     }
     var streakCount = 0;
-    for(var i = gameWins.length; i>-1; i--){
-        if(gameWins[i] == 1){
+    for (var i = gameWins.length; i > -1; i--) {
+        if (gameWins[i] == 1) {
             streakCount += 1;
         }
-        if(gameWins[i] == 0){
+        if (gameWins[i] == 0) {
             break;
         }
     }
@@ -483,8 +438,8 @@ function WinRound(populate){
     SaveProgress();
 }
 
-function ShareResults(){
-    const shareText = "I solved today's Redactle (#" + (redactleIndex+1) + ") in " + gameScores[redactleIndex] + " guesses with an accuracy of " + currentAccuracy + "%. Played at https://www.redactle.com/";
+function ShareResults() {
+    const shareText = "I solved today's Redactle (#" + (redactleIndex + 1) + ") in " + gameScores[redactleIndex] + " guesses with an accuracy of " + currentAccuracy + "%. Played at https://www.redactle.com/";
     const copied = ClipboardJS.copy(shareText);
     if (copied) {
         alert("Results copied to clipboard. Thanks for playing!");
@@ -494,62 +449,71 @@ function ShareResults(){
     }
 }
 
-function RevealPage(){
+function RevealPage() {
     RemoveHighlights(false);
-    for(var i = 0; i < baffled.length; i++){
+    for (var i = 0; i < baffled.length; i++) {
         baffled[i][1].reveal();
         baffled[i][1].elements[0].element.classList.remove("baffled");
     }
     pageRevealed = true;
 }
 
-function BuildStats(){
-    for(var i = statLogBody.rows.length-1;i>0;i--){
+function BuildStats() {
+    for (var i = statLogBody.rows.length - 1; i > 0; i--) {
         statLogBody.deleteRow(i);
     }
-    for(var i = 0; i < gameWins.length; i++){
-        if(gameWins[i] == 1){
+    for (var i = 0; i < gameWins.length; i++) {
+        if (gameWins[i] == 1) {
             var statRow = statLogBody.insertRow(1);
-            statRow.innerHTML='<td>'+(i+1)+'</td><td>'+gameAnswers[i]+'</td><td>'+gameScores[i]+'</td><td>'+gameAccuracy[i]+'%</td>';
+            statRow.innerHTML = '<td>' + (i + 1) + '</td><td>' + gameAnswers[i] + '</td><td>' + gameScores[i] + '</td><td>' + gameAccuracy[i] + '%</td>';
         }
     }
 }
 
-function HideZero(){
+function HideZero() {
     hidingZero = true;
     SaveProgress();
-    $('.tableHits').each(function(){
-        if(this.innerHTML == '0'){
+    $('.tableHits').each(function () {
+        if (this.innerHTML == '0') {
             $(this).parent().addClass('hiddenRow');
         }
     });
 }
 
-function ShowZero(){
+function ShowZero() {
     hidingZero = false;
     SaveProgress();
-    $('.hiddenRow').each(function(){
+    $('.hiddenRow').each(function () {
         $(this).removeClass('hiddenRow');
     });
 }
 
+function SelectArticlesStandard() {
+    selectArticle = 'standard';
+    SaveProgress();
+}
 
-function RemoveHighlights(clearCur){
-    if(clearCur){
+function SelectArticlesCustom() {
+    selectArticle = 'custom';
+    SaveProgress();
+}
+
+function RemoveHighlights(clearCur) {
+    if (clearCur) {
         currentlyHighlighted = null;
     }
-    $('.highlighted').each(function(){
+    $('.highlighted').each(function () {
         $(this).removeClass('highlighted');
     });
-    $('.superHighlighted').each(function(){
+    $('.superHighlighted').each(function () {
         this.classList.remove('superHighlighted');
     });
-    $('#guessLogBody').find('.table-secondary').each(function(){
+    $('#guessLogBody').find('.table-secondary').each(function () {
         this.classList.remove('table-secondary');
     })
 }
 
-function SaveProgress(){
+function SaveProgress() {
     //if($('#autoPlural').is(':checked')){
     //    pluralizing = true;
     //} else{
@@ -562,24 +526,38 @@ function SaveProgress(){
     save.saveData.gameScores = gameScores;
     save.saveData.gameAccuracy = gameAccuracy;
     save.prefs.hidingZero = hidingZero;
+    save.prefs.selectedArticles = selectedArticles;
     save.prefs.hidingLog = hidingLog;
+    save.prefs.streamName = streamName;
     save.prefs.pluralizing = pluralizing;
-    localStorage.setItem("redactleSavet",JSON.stringify(save));
+    localStorage.setItem("redactleSavet", JSON.stringify(save));
 }
 
-function newGame(){
+function newGame() {
     localStorage.clear();
     save.saveData.redactleIndex += 1;
-    save.saveData.articleName = articles[Math.floor(Math.random() * articles.length)];
+    save.saveData.articleName = getArticleName();
     save.saveData.guessedWords = [];
     save.saveData.gameWins = gameWins;
     save.saveData.gameScores = gameScores;
     save.saveData.gameAccuracy = gameAccuracy;
     save.prefs.hidingZero = hidingZero;
+    save.prefs.selectedArticles = selectedArticles;
     save.prefs.hidingLog = hidingLog;
+    save.prefs.streamName = streamName;
     save.prefs.pluralizing = pluralizing;
-    localStorage.setItem("redactleSavet",JSON.stringify(save));
+    localStorage.setItem("redactleSavet", JSON.stringify(save));
     //LoadSave();
     location.reload();
+}
+
+function getArticleName() {
+    var e = document.getElementById("selectArticle");
+    var value = e.value;
+    if (value === 'custom') {
+        return customArticles[Math.floor(Math.random() * customArticles.length)];
+    }
+    return articles[Math.floor(Math.random() * articles.length)];
+
 }
 
