@@ -10,7 +10,7 @@
 
 - here is also a tutorial
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/v=lrJ-YYVas-U/0.jpg)](https://www.youtube.com/watch?v=lrJ-YYVas-U)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/lrJ-YYVas-U/0.jpg)](https://www.youtube.com/watch?v=lrJ-YYVas-U)
 
 TODO:
 
