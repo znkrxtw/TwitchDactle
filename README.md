@@ -8,6 +8,10 @@
 - start capturing browser window with OBS or something which can stream to twitch.
 - Then just type in your twitch chat window.
 
+- here is also a tutorial
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/v=lrJ-YYVas-U/0.jpg)](https://www.youtube.com/watch?v=lrJ-YYVas-U)
+
 TODO:
 
 - maybe add option to automatically start new game when current game is completeted
