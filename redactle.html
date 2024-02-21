@@ -56,11 +56,9 @@
                 <li class="nav-item">
                     <a class="nav-link mx-2" href="#" id="settingsBtn">Settings</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link mx-2" href="https://www.patreon.com/jhntrnr" target="_blank">Patreon</a>
-                </li>
             </ul>
             <button class="btn btn-outline-secondary" type="button" id="newGame">New Game</button>
+            <button class="btn btn-outline-secondary btn-fancy-reveal" type="button" id="revealPageButton">Reveal Page</button>
         </div>
     </nav>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-right overflow-auto">
@@ -75,7 +73,7 @@
             <tbody id="guessLogBody"></tbody>
         </table>
     </nav>
-    <div class="bg-dark fixed-bottom" id="inputHolder" style="">
+    <div class="bg-dark fixed-bottom" id="inputHolder">
         <div class="input-group m-3" id="inGrp">
             <button class="btn btn-outline-secondary" type="button" id="backToTop">▲ Top</button>
             <input type="text" class="form-text-lg" aria-label="Text input" autofocus="" autocomplete="off"
@@ -86,11 +84,8 @@
     <div class="container container-lg" id="winText"></div>
     <div class="container container-lg" id="wikiHolder" style="display: flex;">
         <div class="mw-parser-output">
-
-
         </div>
     </div>
-
 
     <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;"
         aria-hidden="true">
@@ -214,7 +209,6 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="statsModal" tabindex="-1" aria-labelledby="statsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content text-dark">
@@ -244,6 +238,21 @@
         </div>
     </div>
 
+    <div class="modal fade" id="revealModal" tabindex="-1" aria-labelledby="revealModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <!-- <h5 class="modal-title" id="revealModalLabel"></h5> -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body closeReveal">Reveal Page?</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary doReveal" data-bs-confirm="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" src="redactle/commonWords.js"></script>
     <script type="text/javascript" src="redactle/pluralize.js"></script>
     <script type="text/javascript" src="redactle/clipboard.js"></script>
@@ -253,7 +262,6 @@
     <script type="text/javascript" src="redactle/articleNames.js"></script>
     <script type="text/javascript" src="redactle/customArticleNames.js"></script>
     <script type="text/javascript" src="redactle/index.js"></script>
-
 
 </body>
 

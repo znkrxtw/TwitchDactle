@@ -2,6 +2,7 @@ var pluralizing;
 var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
 var settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
 var statsModal = new bootstrap.Modal(document.getElementById('statsModal'));
+var revealModal = new bootstrap.Modal(document.getElementById('revealModal'));
 
 window.onload = function () {
     var input = document.getElementById("userGuess");
@@ -126,6 +127,11 @@ window.onload = function () {
         document.querySelector("body").style.overflow = "hidden";
     });
 
+    $("#revealPageButton").click(function () {
+        revealModal.show();
+        document.querySelector("body").style.overflow = "hidden";
+    });
+
     $(".closeInfo").each(function () {
         $(this).click(function () {
             infoModal.hide();
@@ -145,6 +151,21 @@ window.onload = function () {
     $(".closeStats").each(function () {
         $(this).click(function () {
             statsModal.hide();
+            document.querySelector("body").style.overflow = "auto";
+        });
+    });
+
+    $(".closeReveal").each(function () {
+        $(this).click(function () {
+            revealModal.hide();
+            document.querySelector("body").style.overflow = "auto";
+        });
+    });
+
+    $(".doReveal").each(function () {
+        $(this).click(function () {
+            RevealPage();
+            revealModal.hide();
             document.querySelector("body").style.overflow = "auto";
         });
     });
@@ -170,6 +191,10 @@ window.onload = function () {
         }
         if (event.target == document.getElementById("statsModal")) {
             statsModal.hide();
+            document.querySelector("body").style.overflow = "auto";
+        }
+        if (event.target == document.getElementById("revealModal")) {
+            revealModal.hide();
             document.querySelector("body").style.overflow = "auto";
         }
     };

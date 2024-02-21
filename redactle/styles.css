@@ -68,6 +68,25 @@ td{
     -ms-user-select:none;
     user-select:none;
 }
+
+.btn-fancy-reveal {
+    margin-left: 20px;
+}
+
+.btn-fancy-reveal:hover{
+    background-color: red;
+    color: white;
+    margin-left: 20px;
+}
+
+.closeReveal {
+    margin: auto;
+}
+
+.doReveal{
+    margin: auto;
+}
+
 @media (min-width:992px){
     .navbar.fixed-right{
         top:0;
