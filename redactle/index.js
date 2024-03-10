@@ -88,12 +88,10 @@ function LoadSave() {
     fetchData(true, articleName);
 }
 
-
 async function fetchData(retry, artStr) {
 
     if (retry) {
         var article = artStr;
-
     } else {
         var article = atob(artStr);
     }
@@ -107,6 +105,11 @@ async function fetchData(retry, artStr) {
         .then(receivedJson => {
             conting = true;
             var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
+            const word = WordCount(cleanText, 'film');
+            const result = checkToSkipArticle(word);
+            if(result) {
+                return newGame();
+            }   
             wikiHolder.style.display = "none";
             wikiHolder.innerHTML = cleanText;
             var redirecting = document.getElementsByClassName('redirectMsg');
@@ -246,6 +249,25 @@ async function fetchData(retry, artStr) {
         });
 }
 LoadSave();
+
+function WordCount(text, word) {
+    console.log("counting words");
+    let splitText = text.split(' ');
+    let filterText = splitText.filter(function (n) { return n === word });
+    return filterText.length;
+}
+
+function checkToSkipArticle(wordCount) {
+    if(wordCount >= 5) {
+        let probability = Math.random();
+        //30% percent chance to get a new article
+        if(probability >= 0.7) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 function PerformGuess(guessedWord, populate) {
     clickThruIndex = 0;
