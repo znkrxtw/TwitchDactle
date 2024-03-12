@@ -400,6 +400,11 @@ function LogGuess(guess, populate) {
 function WinRound(populate) {
     document.getElementById("userGuess").disabled = true;
     if (!pageRevealed) {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+        });
         RevealPage();
         if (!populate) {
             gameScores[redactleIndex] = guessedWords.length;
