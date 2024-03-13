@@ -89,7 +89,6 @@ function LoadSave() {
 }
 
 async function fetchData(retry, artStr) {
-
     if (retry) {
         var article = artStr;
     } else {
@@ -401,9 +400,16 @@ function WinRound(populate) {
     document.getElementById("userGuess").disabled = true;
     if (!pageRevealed) {
         confetti({
-            particleCount: 100,
+            scalar: 10,
+            particleCount: 50,
             spread: 70,
-            origin: { y: 0.6 },
+            shapes: ["emoji", "image"],
+            shapeOptions: {
+                emoji: {
+                    value: ["🍆", "💧","💦","🥵","🍑"]
+                }
+            },
+            origin: { y: 0.6 }
         });
         RevealPage();
         if (!populate) {
