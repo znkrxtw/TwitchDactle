@@ -104,11 +104,10 @@ async function fetchData(retry, artStr) {
         .then(receivedJson => {
             conting = true;
             var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
-            const word = WordCount(cleanText, 'film');
-            const result = checkToSkipArticle(word);
-            if(result) {
+            if(rejectArticle(cleanText)) {
                 // the article must be skipped
                 // wait 2 seconds and start a new game
+                console.log("Skipping the article " + articleName);
                 return setTimeout(newGame, 2000);
             }   
             wikiHolder.style.display = "none";
@@ -251,24 +250,6 @@ async function fetchData(retry, artStr) {
 }
 LoadSave();
 
-function WordCount(text, word) {
-    console.log("counting words");
-    let splitText = text.split(' ');
-    let filterText = splitText.filter(function (n) { return n === word });
-    return filterText.length;
-}
-
-function checkToSkipArticle(wordCount) {
-    if(wordCount >= 5) {
-        let probability = Math.random();
-        //30% percent chance to get a new article
-        if(probability >= 0.7) {
-            return true;
-        }
-    }
-
-    return false;
-}
 
 function PerformGuess(guessedWord, populate) {
     clickThruIndex = 0;
@@ -569,7 +550,6 @@ function SaveProgress() {
 }
 
 function newGame() {
-    console.log("Starting new game")
     localStorage.clear();
     save.saveData.redactleIndex += 1;
     save.saveData.articleName = getArticleName();
