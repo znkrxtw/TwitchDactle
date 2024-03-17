@@ -107,7 +107,9 @@ async function fetchData(retry, artStr) {
             const word = WordCount(cleanText, 'film');
             const result = checkToSkipArticle(word);
             if(result) {
-                return newGame();
+                // the article must be skipped
+                // wait 2 seconds and start a new game
+                return setTimeout(newGame, 2000);
             }   
             wikiHolder.style.display = "none";
             wikiHolder.innerHTML = cleanText;
@@ -567,6 +569,7 @@ function SaveProgress() {
 }
 
 function newGame() {
+    console.log("Starting new game")
     localStorage.clear();
     save.saveData.redactleIndex += 1;
     save.saveData.articleName = getArticleName();
