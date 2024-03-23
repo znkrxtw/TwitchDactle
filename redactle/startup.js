@@ -6,7 +6,6 @@ var revealModal = new bootstrap.Modal(document.getElementById('revealModal'));
 
 window.onload = function () {
     var input = document.getElementById("userGuess");
-
     input.addEventListener("keyup", function (event) {
         if (event.keyCode === 13 && event.shiftKey) {
             event.preventDefault();

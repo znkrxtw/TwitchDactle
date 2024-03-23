@@ -5,11 +5,8 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!--
-    <link href="Redactle%20-%20A%20daily%20puzzle%20game_files/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    -->
-    <link href="redactle/bootstrap.min.css" rel="stylesheet">
-
+    <link href="redactle/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="redactle/lib/ldloader/ldloader.css" type="text/css" rel="stylesheet">
     <link href="redactle/styles.css" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -18,15 +15,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
         content="Try to find the title of a random Wikipedia article by guessing words to reveal them on the page. New puzzle daily!">
-    <meta property="og:title" content="Redactle - A daily puzzle game">
+    <meta property="og:title" content="Redactle">
     <meta property="og:description" content="Try to find the title of a random Wikipedia article.">
-    <meta property="og:url" content="https://www.redactle.com/">
-    <meta property="og:image" content="https://www.redactle.com/card.png">
 
-    <script src="redactle/comfy.min.js"></script>
-    <script src="redactle/jquery-3.6.0.min.js"></script>
-    <script src="redactle/popper.min.js"></script>
-    <script src="redactle/bootstrap.min.js"></script>
+    <script src="redactle/lib/comfy/comfy.min.js"></script>
+    <script src="redactle/lib/jquery/jquery-3.6.0.min.js"></script>
+    <script src="redactle/lib/popper/popper.min.js"></script>
+    <script src="redactle/lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="redactle/lib/ldloader/ldloader.js"></script>
 
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -35,12 +31,12 @@
 
         gtag('config', 'G-XJ8GHB89KF');
     </script>
-    <title>Redactle - A daily puzzle game</title>
+    <title>TwitchDactle - A game</title>
 </head>
 
 <body style="overflow: auto;" class="">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="">
-        <span class="navbar-brand mb-0 h1 mx-4">Redactle</span>
+        <span class="navbar-brand mb-0 h1 mx-4">TwitchDactle</span>
         <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="">
             <span class="navbar-toggler-icon"></span>
@@ -82,6 +78,7 @@
         </div>
     </div>
     <div class="container container-lg" id="winText"></div>
+    <div id="loadingIcon" class="text-danger ldloader bare" style="position: absolute;width: 100px;height: 100px; color: white;"></div>
     <div class="container container-lg" id="wikiHolder" style="display: flex;">
         <div class="mw-parser-output">
         </div>
@@ -97,17 +94,6 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>
-                        Redactle is a daily browser game where the user tries
-                        to determine the subject of a random obfuscated Wikipedia article,
-                        chosen from <a href="https://en.wikipedia.org/wiki/Wikipedia:Vital_articles/Level/4"
-                            target="_blank">Wikipedia's 10,000 Vital Articles (Level 4).</a>
-                    </p>
-                    <p>A new puzzle will be available every day at 11:00 AM CDT (16:00 UTC).</p>
-                    <p>Follow Redactle on Twitter <a href="https://www.twitter.com/RedactleGame"
-                            target="_blank">@RedactleGame</a>.</p>
-                    <p>Created by <a href="https://www.twitter.com/jhntrnr" target="_blank">John Turner</a></p>
-                    <p id="yesterday">The answer to yesterday's Redactle was: empathy</p>
                     <h5>How to Play</h5>
                     <ul>
                         <li>Type a word into the input box and press Enter or the Guess button.</li>
@@ -143,16 +129,6 @@
                         </li>
                         <li>Check the Settings menu for configuration options.</li>
                     </ul>
-                    <h5>Does Redactle collect any user data?</h5>
-                    <p>
-                        In order to provide global performance stats,
-                        Redactle makes note of a user's performance on a given puzzle. The data
-                        collected is limited to the user's score and accuracy, and is
-                        anonymized.
-                    </p>
-                    <p>Redactle does not collect any information regarding a user's actual guesses.</p>
-                    <p>For more information, view Redactle's <a href="https://www.redactle.com/privacy.html">Privacy
-                            Policy.</a></p>
                     <p class="text-secondary">Version 1.0</p>
                 </div>
                 <div class="modal-footer">
@@ -161,7 +137,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -242,10 +217,16 @@
         <div class="modal-dialog">
             <div class="modal-content text-dark">
                 <div class="modal-header">
-                    <!-- <h5 class="modal-title" id="revealModalLabel"></h5> -->
+                    <h5 class="modal-title" id="revealModalLabel">Reveal Page?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body closeReveal">Reveal Page?</div>
+                <div class="modal-body closeReveal">
+                    <div>You will cheat not only the game, but yourself.</div>
+                    <div>You will not grow.</div>
+                    <div>You will not improve.</div>
+                    <div>You will take a shortcut and gain nothing.</div>
+                    <div>You will experience a hollow victory. Nothing will be risked and nothing will be gained.</div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary doReveal" data-bs-confirm="modal">Yes</button>
                 </div>
@@ -253,17 +234,18 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="redactle/tsparticles.confettti.bundles.js"></script>
+    <script type="text/javascript" src="redactle/lib/tsparticles/tsparticles.confettti.bundles.js"></script>
     <script type="text/javascript" src="redactle/commonWords.js"></script>
     <script type="text/javascript" src="redactle/pluralize.js"></script>
-    <script type="text/javascript" src="redactle/clipboard.js"></script>
-    <script type="text/javascript" src="redactle/baffle.min.js"></script>
+    <script type="text/javascript" src="redactle/lib/clipboard/clipboard.js"></script>
+    <script type="text/javascript" src="redactle/lib/baffle/baffle.min.js"></script>
     <script type="text/javascript" src="redactle/gameList.js"></script>
     <script type="text/javascript" src="redactle/startup.js"></script>
     <script type="text/javascript" src="redactle/articleNames.js"></script>
     <script type="text/javascript" src="redactle/customArticleNames.js"></script>
     <script type="text/javascript" src="redactle/rejectionFunctions.js"></script>
     <script type="text/javascript" src="redactle/index.js"></script>
+
 </body>
 
 </html>

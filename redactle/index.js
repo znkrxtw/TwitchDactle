@@ -28,6 +28,7 @@ var ses;
 var redactleIndex;
 var yesterday;
 var articleName;
+var loadingIcon;
 
 function uuidv4() {
     return ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, c =>
@@ -49,7 +50,6 @@ function median(numbers) {
 const average = (array) => array.reduce((a, b) => a + b) / array.length;
 
 function LoadSave() {
-
     if (localStorage.getItem("redactleSavet") === null) {
         localStorage.clear();
         playerID = uuidv4();
@@ -89,6 +89,7 @@ function LoadSave() {
 }
 
 async function fetchData(retry, artStr) {
+
     if (retry) {
         var article = artStr;
     } else {
@@ -195,7 +196,11 @@ async function fetchData(retry, artStr) {
                     // the article must be skipped
                     // wait 2 seconds and start a new game
                     console.log("Skipping the article " + articleName);
-                    return setTimeout(newGame, 2000);
+                    let LIcon = new ldloader({root: "#loadingIcon"})
+                    LIcon.on();
+                    setTimeout(newGame, 2000);
+                    LIcon.off();
+                    return;
                 }   
 
 
