@@ -16,6 +16,7 @@ window.onload = function () {
                 pluralizing = true;
             }
             document.getElementById("submitGuess").click();
+            input.value = '';
         } else {
             if (event.keyCode === 13) {
                 if ($('#autoPlural').is(':checked')) {
@@ -24,6 +25,7 @@ window.onload = function () {
                     pluralizing = false;
                 }
                 document.getElementById("submitGuess").click();
+                input.value = '';
             }
         }
     });

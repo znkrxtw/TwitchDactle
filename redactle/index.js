@@ -104,12 +104,6 @@ async function fetchData(retry, artStr) {
         .then(receivedJson => {
             conting = true;
             var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
-            if(rejectArticle(cleanText)) {
-                // the article must be skipped
-                // wait 2 seconds and start a new game
-                console.log("Skipping the article " + articleName);
-                return setTimeout(newGame, 2000);
-            }   
             wikiHolder.style.display = "none";
             wikiHolder.innerHTML = cleanText;
             var redirecting = document.getElementsByClassName('redirectMsg');
@@ -192,6 +186,19 @@ async function fetchData(retry, artStr) {
                 e[0].innerHTML = e[0].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/(<style.*<\/style>)/g, "").replace(/(<span class="punctuation">.<\/span>)|(^|<\/?[^>]+>|\s+)|([^\s<]+)/g, '$1$2<span class="innerTxt">$3</span>').replace('<<span class="innerTxt">h1>', '<h1><span class="innerTxt">');
                 $(e[0]).find('*:empty').remove();
                 wikiHolder.innerHTML = wikiHolder.innerHTML.replace(/<!--(?!>)[\S\s]*?-->/g, '');
+
+                // make the check for rejection here
+                // repackage the words into a text and send it to rejectArticle
+                // (i'm too lazy to do it properly, !thisisfine)
+                var cleanerText = [...wikiHolder.getElementsByClassName("innerTxt")].reduce((text, item) => text + ' ' + item.textContent, "");
+                if(rejectArticle(cleanerText)) {
+                    // the article must be skipped
+                    // wait 2 seconds and start a new game
+                    console.log("Skipping the article " + articleName);
+                    return setTimeout(newGame, 2000);
+                }   
+
+
                 $(".mw-parser-output span").not(".punctuation").each(function () {
                     var txt = this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                     if (!commonWords.includes(txt)) {
@@ -303,7 +310,7 @@ function PerformGuess(guessedWord, populate) {
             WinRound(populate);
         }
     }
-    document.getElementById("userGuess").value = '';
+    //document.getElementById("userGuess").value = ''; // removed due to PerformGuess being called through twitch input concurrently
 }
 
 function LogGuess(guess, populate) {
@@ -382,6 +389,8 @@ function LogGuess(guess, populate) {
 function WinRound(populate) {
     document.getElementById("userGuess").disabled = true;
     if (!pageRevealed) {
+        const clap = new Audio("./clap.mp3");
+        clap.addEventListener('canplaythrough', clap.play);
         confetti({
             scalar: 10,
             particleCount: 50,

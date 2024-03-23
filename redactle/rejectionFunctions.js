@@ -43,8 +43,8 @@ const rejectionFunctions = [            // elements must be (string -> bool), tr
   rejectBasedOnTooManyWords("film", 5, 0.3),
   // reject 40% of articles with at least 10 words 'player'
   rejectBasedOnTooManyWords("player", 10, 0.6),
-  // reject all articles shorter than 800 words
-  rejectTooShort(800),
+  // reject all articles shorter than 300 words
+  rejectTooShort(300),
 ]; 
 
 function rejectArticle(text){
