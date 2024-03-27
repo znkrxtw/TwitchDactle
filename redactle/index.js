@@ -577,9 +577,19 @@ function newGame() {
     save.prefs.hidingLog = hidingLog;
     save.prefs.streamName = streamName;
     save.prefs.pluralizing = pluralizing;
+    baffled = [];
+    ans = [];
+    guessCounter = 0;
+    hitCounter = 0;
+    currentAccuracy = -1;
+    pageRevealed = false;
+    clickThruIndex = 0;
+    clickThruNodes = []; // doesn't seem to be used
     localStorage.setItem("redactleSavet", JSON.stringify(save));
-    //LoadSave();
-    location.reload();
+    $("#guessLogBody").empty();
+    document.getElementById("userGuess").disabled = false;
+    LoadSave();
+    //location.reload();
 }
 
 function getArticleName() {
