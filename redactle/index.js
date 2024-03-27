@@ -118,13 +118,17 @@ async function fetchData(retry, artStr) {
                     var seeAlso = document.getElementById("See_also").parentNode;
                 } else if (document.getElementById("Notes") != null) {
                     var seeAlso = document.getElementById("Notes").parentNode;
-                } else {
+                } else if (document.getElementById("References") != null){
                     var seeAlso = document.getElementById("References").parentNode;
+                } else {
+                    var seeAlso = null;
                 }
                 var e = document.getElementsByClassName('mw-parser-output');
-                alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
-                for (var i = alsoIndex; i < e[0].children.length; i++) {
-                    e[0].removeChild(e[0].children[i]);
+                if (seeAlso != null) {
+                    alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
+                    for (var i = alsoIndex; i < e[0].children.length; i++) {
+                        e[0].removeChild(e[0].children[i]);
+                    }
                 }
                 var all_bad_elements = wikiHolder.querySelectorAll("[rel='mw-deduplicated-inline-style'], [title='Name at birth'], [aria-labelledby='micro-periodic-table-title'], .barbox, .wikitable, .clade, .Expand_section, .nowrap, .IPA, .thumb, .mw-empty-elt, .mw-editsection, .nounderlines, .nomobile, .searchaux, #toc, .sidebar, .sistersitebox, .noexcerpt, #External_links, #Further_reading, .hatnote, .haudio, .portalbox, .mw-references-wrap, .infobox, .unsolved, .navbox, .metadata, .refbegin, .reflist, .mw-stack, #Notes, #References, .reference, .quotebox, .collapsible, .uncollapsed, .mw-collapsible, .mw-made-collapsible, .mbox-small, .mbox, #coordinates, .succession-box, .noprint, .mwe-math-element, .cs1-ws-icon");
 
@@ -576,9 +580,19 @@ function newGame() {
     save.prefs.hidingLog = hidingLog;
     save.prefs.streamName = streamName;
     save.prefs.pluralizing = pluralizing;
+    baffled = [];
+    ans = [];
+    guessCounter = 0;
+    hitCounter = 0;
+    currentAccuracy = -1;
+    pageRevealed = false;
+    clickThruIndex = 0;
+    clickThruNodes = []; // doesn't seem to be used
     localStorage.setItem("redactleSavet", JSON.stringify(save));
-    //LoadSave();
-    location.reload();
+    $("#guessLogBody").empty();
+    document.getElementById("userGuess").disabled = false;
+    LoadSave();
+    //location.reload();
 }
 
 function getArticleName() {
