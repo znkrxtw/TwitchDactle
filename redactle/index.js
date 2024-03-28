@@ -123,7 +123,7 @@ async function fetchData(retry, artStr) {
                     seeAlso = document.getElementById("References").parentNode;
                 }
                 var e = document.getElementsByClassName('mw-parser-output');
-                if (!seeAlso) {
+                if (seeAlso) {
                     alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
                     for (var i = alsoIndex; i < e[0].children.length; i++) {
                         e[0].removeChild(e[0].children[i]);
