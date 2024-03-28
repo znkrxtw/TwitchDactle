@@ -3,7 +3,7 @@ var guessLogBody = document.getElementById("guessLogBody");
 var statLogBody = document.getElementById("statsTable");
 var baffled = [];
 var guessedWords = [];
-var ans = [];
+var answer = [];
 var ansStr;
 var guessCounter = 0;
 var hidingZero = false;
@@ -114,17 +114,16 @@ async function fetchData(retry, artStr) {
                 fetchData(!conting, redirURL)
             }
             if (conting) {
+                let seeAlso;
                 if (document.getElementById("See_also") != null) {
-                    var seeAlso = document.getElementById("See_also").parentNode;
+                    seeAlso = document.getElementById("See_also").parentNode;
                 } else if (document.getElementById("Notes") != null) {
-                    var seeAlso = document.getElementById("Notes").parentNode;
+                    seeAlso = document.getElementById("Notes").parentNode;
                 } else if (document.getElementById("References") != null){
-                    var seeAlso = document.getElementById("References").parentNode;
-                } else {
-                    var seeAlso = null;
+                    seeAlso = document.getElementById("References").parentNode;
                 }
                 var e = document.getElementsByClassName('mw-parser-output');
-                if (seeAlso != null) {
+                if (!seeAlso) {
                     alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
                     for (var i = alsoIndex; i < e[0].children.length; i++) {
                         e[0].removeChild(e[0].children[i]);
@@ -173,8 +172,8 @@ async function fetchData(retry, artStr) {
                 titleHolder.innerHTML = titleTxt;
                 e[0].prepend(titleHolder);
                 ansStr = titleTxt.replace(/ *\([^)]*\) */g, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                ans = ansStr.match(/\b(\w+'\w+|\w+)\b/g);
-                ans = ans.filter(function (el) {
+                answer = ansStr.match(/\b(\w+'\w+|\w+)\b/g);
+                answer = answer.filter(function (el) {
                     return commonWords.indexOf(el) < 0;
                 });
                 e[0].innerHTML = e[0].innerHTML.replace(/\(; /g, '(').replace(/\(, /g, '(').replace(/\(, /g, '(').replace(/: ​;/g, ';').replace(/ \(\) /g, ' ').replace(/<\/?span[^>]*>/g, "");;
@@ -312,10 +311,10 @@ function PerformGuess(guessedWord, populate) {
                 }
             });
         }
-        if (ans.includes(normGuess)) {
-            ans = ans.filter(function (e) { return e !== normGuess })
+        if (answer.includes(normGuess)) {
+            answer = answer.filter(function (e) { return e !== normGuess })
         }
-        if (ans.length == 0) {
+        if (answer.length == 0) {
             WinRound(populate);
         }
     }
@@ -582,7 +581,7 @@ function newGame() {
     save.prefs.streamName = streamName;
     save.prefs.pluralizing = pluralizing;
     baffled = [];
-    ans = [];
+    answer = [];
     guessCounter = 0;
     hitCounter = 0;
     currentAccuracy = -1;
