@@ -17837,7 +17837,6 @@ const customArticles = [
     "Guizhou",
     "Uruguay",
     "Rift_Valley_Province",
-    "Al_Madinah_(Medina)",
     "Republic_of_Karelia",
     "Gao_Region",
     "Tuva_Republic",

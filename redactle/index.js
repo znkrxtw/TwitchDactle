@@ -394,7 +394,8 @@ function LogGuess(guess, populate) {
 function WinRound(populate) {
     document.getElementById("userGuess").disabled = true;
     if (!pageRevealed) {
-        const clap = new Audio("./clap.mp3");
+        const clap = new Audio('Clap.wav');
+        clap.volume = 0.5;
         clap.addEventListener('canplaythrough', clap.play);
         confetti({
             scalar: 10,
