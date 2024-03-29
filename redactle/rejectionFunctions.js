@@ -39,10 +39,10 @@ const rejectTooShort = (minWordCount) =>
 
 // -------------- ADD STUFF HERE ----------------------
 const rejectionFunctions = [            // elements must be (string -> bool), true means reject
-  // reject 70% of article with at least 5 words 'film'
-  rejectBasedOnTooManyWords("film", 5, 0.3),
-  // reject 40% of articles with at least 10 words 'player'
-  rejectBasedOnTooManyWords("player", 10, 0.6),
+  // reject 60% of article with at least 5 words 'film'
+  rejectBasedOnTooManyWords("film", 5, 0.4),
+  // reject 70% of articles with at least 8 words 'player'
+  rejectBasedOnTooManyWords("player", 8, 0.3),
   // reject all articles shorter than 300 words
   rejectTooShort(300),
 ]; 
