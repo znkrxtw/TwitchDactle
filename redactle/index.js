@@ -30,6 +30,8 @@ var yesterday;
 var articleName;
 var loadingIcon;
 
+var gameIsActive = false;
+
 function uuidv4() {
     return ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -206,6 +208,7 @@ async function fetchData(retry, artStr) {
                     return;
                 }   
 
+                gameIsActive = true;
 
                 $(".mw-parser-output span").not(".punctuation").each(function () {
                     var txt = this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -267,6 +270,9 @@ LoadSave();
 
 
 function PerformGuess(guessedWord, populate) {
+    if (!gameIsActive){
+      return;
+    }
     clickThruIndex = 0;
     RemoveHighlights(false);
     var normGuess = guessedWord.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -395,6 +401,7 @@ function LogGuess(guess, populate) {
 
 
 function WinRound(populate) {
+    gameIsActive = false;
     document.getElementById("userGuess").disabled = true;
     if (!pageRevealed) {
         const clap = new Audio('Clap.wav');
