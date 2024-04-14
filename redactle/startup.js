@@ -205,6 +205,12 @@ window.onload = function () {
         EnterGuess(firstWord);
     };
 
+    ComfyJS.onCommand = (user, command, message, flags, extra) => {
+        if (command === "next" && pageRevealed === true) {
+            newGame();
+        }
+    };
+
     function connectStream() {
         if (save.prefs.streamName) {
             ComfyJS.Init(save.prefs.streamName);

@@ -105,6 +105,7 @@ async function fetchData(retry, artStr) {
             return resp.json();
         })
         .then(receivedJson => {
+            let LIcon = new ldloader({ root: "#loadingIcon" })
             conting = true;
             var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
             wikiHolder.style.display = "none";
@@ -116,12 +117,14 @@ async function fetchData(retry, artStr) {
                 fetchData(!conting, redirURL)
             }
             if (conting) {
+                LIcon.on();
+
                 let seeAlso;
                 if (document.getElementById("See_also") != null) {
                     seeAlso = document.getElementById("See_also").parentNode;
                 } else if (document.getElementById("Notes") != null) {
                     seeAlso = document.getElementById("Notes").parentNode;
-                } else if (document.getElementById("References") != null){
+                } else if (document.getElementById("References") != null) {
                     seeAlso = document.getElementById("References").parentNode;
                 }
                 var e = document.getElementsByClassName('mw-parser-output');
@@ -197,16 +200,13 @@ async function fetchData(retry, artStr) {
                 // repackage the words into a text and send it to rejectArticle
                 // (i'm too lazy to do it properly, !thisisfine)
                 var cleanerText = [...wikiHolder.getElementsByClassName("innerTxt")].reduce((text, item) => text + ' ' + item.textContent, "");
-                if(rejectArticle(cleanerText)) {
+                if (rejectArticle(cleanerText)) {
                     // the article must be skipped
                     // wait 2 seconds and start a new game
                     console.log("Skipping the article " + articleName);
-                    let LIcon = new ldloader({root: "#loadingIcon"})
-                    LIcon.on();
                     setTimeout(newGame, 2000);
-                    LIcon.off();
                     return;
-                }   
+                }
 
                 gameIsActive = true;
 
@@ -242,10 +242,10 @@ async function fetchData(retry, artStr) {
                     ShowZero();
                 }
 
-                if(selectedArticles === 'custom') {
+                if (selectedArticles === 'custom') {
                     document.getElementById("selectArticle").value = 'custom';
                     SelectArticlesCustom();
-                } else {                    
+                } else {
                     document.getElementById("selectArticle").value = 'standard';
                     SelectArticlesStandard();
                 }
@@ -259,19 +259,21 @@ async function fetchData(retry, artStr) {
 
 
                 wikiHolder.style.display = "flex";
+                LIcon.off();
             }
         })
         .catch(err => {
             console.error("Error in fetch", err);
             alert("Something went wrong while loading the page. Try refreshing.");
+            LIcon.off();
         });
 }
 LoadSave();
 
 
 function PerformGuess(guessedWord, populate) {
-    if (!gameIsActive){
-      return;
+    if (!gameIsActive) {
+        return;
     }
     clickThruIndex = 0;
     RemoveHighlights(false);
@@ -414,7 +416,7 @@ function WinRound(populate) {
             shapes: ["emoji", "image"],
             shapeOptions: {
                 emoji: {
-                    value: ["🍆", "💧","💦","🥵","🍑"]
+                    value: ["🍆", "💧", "💦", "🥵", "🍑"]
                 }
             },
             origin: { y: 0.6 }
@@ -497,6 +499,24 @@ function RevealPage() {
         baffled[i][1].elements[0].element.classList.remove("baffled");
     }
     pageRevealed = true;
+
+    PrepareForNextGame();
+}
+
+async function PrepareForNextGame() {
+    var i = 0;
+    var elem = document.getElementById("NextGameBar");
+    var width = 1;
+    var id = setInterval(frame, 10);
+    function frame() {
+        if (width >= 100) {
+            clearInterval(id);
+            i = 0;
+        } else {
+            width++;
+            elem.style.width = width + "%";
+        }
+    }
 }
 
 function BuildStats() {
