@@ -2456,7 +2456,6 @@ const customArticles = [
     "2019–20_outbreak_of_novel_coronavirus_(2019-nCoV)",
     "Kansas_City_Chiefs",
     "Royal_Rumble_(2020)",
-    "Luka_Magnotta",
     "Jennifer_Aniston",
     "The_Witcher_(TV_series)",
     "Music_to_Be_Murdered_By",

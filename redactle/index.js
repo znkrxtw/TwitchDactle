@@ -107,6 +107,7 @@ async function fetchData(retry, artStr) {
         .then(receivedJson => {
             let LIcon = new ldloader({ root: "#loadingIcon" })
             conting = true;
+            //TODO if the article does not exist we get an exception with error.code = "missingtitle" (maybe do something then)
             var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
             wikiHolder.style.display = "none";
             wikiHolder.innerHTML = cleanText;
@@ -265,7 +266,6 @@ async function fetchData(retry, artStr) {
         .catch(err => {
             console.error("Error in fetch", err);
             alert("Something went wrong while loading the page. Try refreshing.");
-            LIcon.off();
         });
 }
 LoadSave();
