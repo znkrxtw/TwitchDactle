@@ -105,7 +105,7 @@ async function fetchData(retry, artStr) {
             return resp.json();
         })
         .then(receivedJson => {
-            let LIcon = new ldloader({ root: "#loadingIcon" })
+            //let LIcon = new ldloader({ root: "#loadingIcon" })
             conting = true;
             //TODO if the article does not exist we get an exception with error.code = "missingtitle" (maybe do something then)
             var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
@@ -118,7 +118,7 @@ async function fetchData(retry, artStr) {
                 fetchData(!conting, redirURL)
             }
             if (conting) {
-                LIcon.on();
+                //LIcon.on();
 
                 let seeAlso;
                 if (document.getElementById("See_also") != null) {
@@ -260,7 +260,7 @@ async function fetchData(retry, artStr) {
 
 
                 wikiHolder.style.display = "flex";
-                LIcon.off();
+                //LIcon.off();
             }
         })
         .catch(err => {

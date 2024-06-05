@@ -1,14 +1,65 @@
+html {
+    height: 100%;
+}
+
 body {
     font-family: "Segoe UI", "Liberation Sans", sans-serif;
     background-color: #0f0f0f;
     color: #989898;
+    height: 100%;
+    overflow: hidden;
+}
+
+.simplebar-scrollbar {
+    background: #000;
+    background-clip: padding-box;
+    border-radius: 7px;
+    min-height: 10px;
+    opacity: 0;
+    position: absolute;
+    right: 2px;
+    -webkit-transition: opacity .2s linear;
+    transition: opacity .2s linear;
+    width: 7px
+}
+
+.article-container {
+    overflow-y: auto;
+}
+
+.big-container {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.guess-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.super-parent-container {
+    display: grid;
+    height: 100vh;
+    grid-template-rows: auto auto;
+}
+
+.parent-container {
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+
+.guess-area {
+    display: grid;
+    grid-template-rows: auto auto;
+}
+
+.guess-hit-container {
+    overflow-y: auto;
 }
 
 @media (min-width:992px) {
-    body {
-        margin-right: 30vw;
-
-    }
 
     .mw-parser-output {
         margin-bottom: auto;
@@ -38,7 +89,6 @@ td {
 }
 
 .navbar.fixed-right {
-    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
@@ -64,7 +114,6 @@ td {
 }
 
 #inputHolder {
-    position: fixed;
     bottom: 0;
     z-index: 4;
 }

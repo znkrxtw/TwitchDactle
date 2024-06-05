@@ -22071,7 +22071,6 @@ const customArticles = [
     "Kure_Atoll",
     "Little_Colonsay",
     "Viirelaid",
-    "Boreray_(St_Kilda)",
     "Eilean_Righ",
     "Auskerry",
     "Eilean_Chaluim_Chille",
