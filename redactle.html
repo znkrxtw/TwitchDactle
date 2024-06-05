@@ -90,175 +90,172 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content text-dark">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="infoModalLabel">Welcome to Redactle!</h5>
-                        <button type="button" class="btn-close closeInfo" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <h5>How to Play</h5>
-                        <ul>
-                            <li>Type a word into the input box and press Enter or the Guess button.</li>
-                            <li>All occurrences of that word will become unredacted in the article body.</li>
-                            <li>To win, figure out the title or subject of the article.</li>
-                        </ul>
-                        <h5>Tips and Quirks</h5>
-                        <ul>
-                            <li>Each guess must be one word only (Guessing multiple words at a time will not work).</li>
-                            <li>
-                                <i>Most</i> Punctuation is automatically
-                                revealed in the article page. Some punctuation occasionally escapes
-                                Redactle's filter and becomes redacted.
-                            </li>
-                            <li>Guesses are case <i>insensitive</i>, and letters with diacritics (é, ü, etc) are
-                                considered
-                                to not have those diacritics.</li>
-                            <li>
-                                Shift+Enter will attempt to automatically
-                                pluralize or singularize your guess. There are certain edge cases (e.g.
-                                guessing a nonsense word like "asdf") where this will submit nonsense
-                                guesses.
-                            </li>
-                            <li>
-                                You will likely encounter some formatting and
-                                punctuation quirks. These are a result of stripping away certain
-                                characters and elements present in the original Wikipedia article that
-                                don't play nicely with Redactle.
-                            </li>
-                            <li>
-                                Many common words are automatically revealed for
-                                your convenience. The list includes most English prepositions and
-                                articles. Guessing these words does not count toward your score.
-                            </li>
-                            <li>Check the Settings menu for configuration options.</li>
-                        </ul>
-                        <p class="text-secondary">Version 1.0</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary closeInfo" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content text-dark">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                        <button type="button" class="btn-close closeSettings" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div>
-                            <div>
-                                <label>
-                                    <input name="checkbox" type="checkbox" id="hideZero" class="configCheck"> Hide
-                                    Guesses
-                                    with 0 Hits<br><br>
-                                </label>
-                            </div>
-                            <div>
-                                <label>
-                                    <input name="checkbox" type="checkbox" id="autoPlural" class="configCheck">
-                                    Attempt to automatically pluralize and singularize guesses. There are
-                                    certain edge cases (e.g. guessing a nonsense word like "asdf") where
-                                    this will submit nonsense guesses.<br><br>
-                                </label>
-                            </div>
-                            <div>
-                                <label>
-                                    <select name="articles" id="selectArticle">
-                                        <option value="standard">Top 10000 Articles</option>
-                                        <option value="custom">Custom Articles</option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div>
-                                <label>Twitch Name:
-                                    <input name="streamName" id="streamName" type="text">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary closeSettings"
-                            data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="statsModal" tabindex="-1" aria-labelledby="statsModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content text-dark">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="statsModalLabel">Personal Stats</h5>
-                        <button type="button" class="btn-close closeStats" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="statsHolder">
-                            <table class="table table-dark" id="statsTable">
-                                <tbody>
-                                    <tr>
-                                        <th class="statHeadnum">#</th>
-                                        <th class="statHeadart">Article</th>
-                                        <th class="statHeadguess">Guesses</th>
-                                        <th class="statHeadacc">Accuracy</th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary closeStats"
-                            data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="revealModal" tabindex="-1" aria-labelledby="revealModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content text-dark">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="revealModalLabel">Reveal Page?</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body closeReveal">
-                        <div>You will cheat not only the game, but yourself.</div>
-                        <div>You will not grow.</div>
-                        <div>You will not improve.</div>
-                        <div>You will take a shortcut and gain nothing.</div>
-                        <div>You will experience a hollow victory. Nothing will be risked and nothing will be gained.
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary doReveal" data-bs-confirm="modal">Yes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script type="text/javascript" src="redactle/lib/tsparticles/tsparticles.confettti.bundles.js"></script>
-        <script type="text/javascript" src="redactle/commonWords.js"></script>
-        <script type="text/javascript" src="redactle/pluralize.js"></script>
-        <script type="text/javascript" src="redactle/lib/clipboard/clipboard.js"></script>
-        <script type="text/javascript" src="redactle/lib/baffle/baffle.min.js"></script>
-        <script type="text/javascript" src="redactle/gameList.js"></script>
-        <script type="text/javascript" src="redactle/startup.js"></script>
-        <script type="text/javascript" src="redactle/articleNames.js"></script>
-        <script type="text/javascript" src="redactle/customArticleNames.js"></script>
-        <script type="text/javascript" src="redactle/rejectionFunctions.js"></script>
-        <script type="text/javascript" src="redactle/index.js"></script>
     </div>
+
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoModalLabel">Welcome to Redactle!</h5>
+                    <button type="button" class="btn-close closeInfo" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>How to Play</h5>
+                    <ul>
+                        <li>Type a word into the input box and press Enter or the Guess button.</li>
+                        <li>All occurrences of that word will become unredacted in the article body.</li>
+                        <li>To win, figure out the title or subject of the article.</li>
+                    </ul>
+                    <h5>Tips and Quirks</h5>
+                    <ul>
+                        <li>Each guess must be one word only (Guessing multiple words at a time will not work).</li>
+                        <li>
+                            <i>Most</i> Punctuation is automatically
+                            revealed in the article page. Some punctuation occasionally escapes
+                            Redactle's filter and becomes redacted.
+                        </li>
+                        <li>Guesses are case <i>insensitive</i>, and letters with diacritics (é, ü, etc) are
+                            considered
+                            to not have those diacritics.</li>
+                        <li>
+                            Shift+Enter will attempt to automatically
+                            pluralize or singularize your guess. There are certain edge cases (e.g.
+                            guessing a nonsense word like "asdf") where this will submit nonsense
+                            guesses.
+                        </li>
+                        <li>
+                            You will likely encounter some formatting and
+                            punctuation quirks. These are a result of stripping away certain
+                            characters and elements present in the original Wikipedia article that
+                            don't play nicely with Redactle.
+                        </li>
+                        <li>
+                            Many common words are automatically revealed for
+                            your convenience. The list includes most English prepositions and
+                            articles. Guessing these words does not count toward your score.
+                        </li>
+                        <li>Check the Settings menu for configuration options.</li>
+                    </ul>
+                    <p class="text-secondary">Version 1.0</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary closeInfo" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                    <button type="button" class="btn-close closeSettings" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div>
+                            <label>
+                                <input name="checkbox" type="checkbox" id="hideZero" class="configCheck"> Hide
+                                Guesses
+                                with 0 Hits<br><br>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="checkbox" type="checkbox" id="autoPlural" class="configCheck">
+                                Attempt to automatically pluralize and singularize guesses. There are
+                                certain edge cases (e.g. guessing a nonsense word like "asdf") where
+                                this will submit nonsense guesses.<br><br>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <select name="articles" id="selectArticle">
+                                    <option value="standard">Top 10000 Articles</option>
+                                    <option value="custom">Custom Articles</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div>
+                            <label>Twitch Name:
+                                <input name="streamName" id="streamName" type="text">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary closeSettings" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="statsModal" tabindex="-1" aria-labelledby="statsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statsModalLabel">Personal Stats</h5>
+                    <button type="button" class="btn-close closeStats" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="statsHolder">
+                        <table class="table table-dark" id="statsTable">
+                            <tbody>
+                                <tr>
+                                    <th class="statHeadnum">#</th>
+                                    <th class="statHeadart">Article</th>
+                                    <th class="statHeadguess">Guesses</th>
+                                    <th class="statHeadacc">Accuracy</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary closeStats" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="revealModal" tabindex="-1" aria-labelledby="revealModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="revealModalLabel">Reveal Page?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body closeReveal">
+                    <div>You will cheat not only the game, but yourself.</div>
+                    <div>You will not grow.</div>
+                    <div>You will not improve.</div>
+                    <div>You will take a shortcut and gain nothing.</div>
+                    <div>You will experience a hollow victory. Nothing will be risked and nothing will be gained.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary doReveal" data-bs-confirm="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="redactle/lib/tsparticles/tsparticles.confettti.bundles.js"></script>
+    <script type="text/javascript" src="redactle/commonWords.js"></script>
+    <script type="text/javascript" src="redactle/pluralize.js"></script>
+    <script type="text/javascript" src="redactle/lib/clipboard/clipboard.js"></script>
+    <script type="text/javascript" src="redactle/lib/baffle/baffle.min.js"></script>
+    <script type="text/javascript" src="redactle/gameList.js"></script>
+    <script type="text/javascript" src="redactle/startup.js"></script>
+    <script type="text/javascript" src="redactle/articleNames.js"></script>
+    <script type="text/javascript" src="redactle/customArticleNames.js"></script>
+    <script type="text/javascript" src="redactle/rejectionFunctions.js"></script>
+    <script type="text/javascript" src="redactle/index.js"></script>
 </body>
 
 </html>
