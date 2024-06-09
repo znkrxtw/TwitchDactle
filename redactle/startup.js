@@ -180,6 +180,16 @@ window.onload = function () {
         newGame();
     });
 
+    $("#hideNavBar").click(function () {
+        let navBarHeight = $('#navBar');
+        if (navBarHeight.css("display") != "none") {
+            navBarHeight.css("display", "none");
+        }
+        else {
+            navBarHeight.css("display", "flex");
+        }
+    })
+
     window.onclick = function (event) {
         if (event.target == document.getElementById("infoModal")) {
             infoModal.hide();
