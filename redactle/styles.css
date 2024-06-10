@@ -20,7 +20,7 @@ body {
 .parent-container {
     position: relative;
     display: grid;
-    /*height: 100vh;*/
+    height: 100vh;
     grid-template-columns: 70% 30%;
     overflow-y: auto;
 }
