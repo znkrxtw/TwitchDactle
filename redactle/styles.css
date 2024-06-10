@@ -13,14 +13,14 @@ body {
 .super-parent-container {
     display: flex;
     flex-direction: column;
-    /* height: 100vh; */
+    height: 100vh;
     /* //grid-template-rows: 10% 90%; */
 }
 
 .parent-container {
     position: relative;
     display: grid;
-    height: 90vh;
+    height: 100vh;
     grid-template-columns: 70% 30%;
 }
 
