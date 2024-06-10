@@ -215,6 +215,7 @@ async function fetchData(retry, artStr) {
                     var txt = this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                     if (!commonWords.includes(txt)) {
                         this.classList.toggle('baffled');
+                        this.setAttribute('word-length', txt.length);
                         let b = baffle(this).once().set({
                             characters: 'abcd'
                         });

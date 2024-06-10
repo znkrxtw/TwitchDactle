@@ -245,3 +245,16 @@ td {
         padding-left: 0;
     }
 }
+
+.innerTxt.baffled {
+  position: relative;
+}
+
+.baffled:after {
+  content: attr(word-length);
+  position: absolute;
+  color: #0f0f0f;
+  font-family: monospace;
+  left: .1em;
+  top: 0;
+}
