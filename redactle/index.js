@@ -59,7 +59,7 @@ function LoadSave() {
         playerID = uuidv4();
         articleName = getArticleName();
         redactleIndex = 0;
-        save = JSON.parse(JSON.stringify({ "saveData": { redactleIndex, articleName, guessedWords, gameWins, gameScores, gameAccuracy, gameAnswers, numbersRevealed }, "prefs": { hidingZero, hidingLog, pluralizing, selectedArticles, streamName }, "id": { playerID } }));
+        save = JSON.parse(JSON.stringify({ "saveData": { redactleIndex, articleName, guessedWords, gameWins, gameScores, gameAccuracy, gameAnswers, numbersRevealed, pageRevealed}, "prefs": { hidingZero, hidingLog, pluralizing, selectedArticles, streamName }, "id": { playerID } }));
     } else {
         save = JSON.parse(localStorage.getItem("redactleSavet"));
     }
@@ -87,6 +87,7 @@ function LoadSave() {
 
     guessedWords = save.saveData.guessedWords;
     numbersRevealed = save.saveData.numbersRevealed;
+    pageRevealed = save.saveData.pageRevealed;
 
     SaveProgress();
 
@@ -264,6 +265,12 @@ async function fetchData(retry, artStr) {
 
                 document.getElementById("streamName").value = streamName;
 
+                // temporary solution - if the page is supposed to be revealed, reveal the text we just baffled
+                if (pageRevealed)
+                {
+                    WinRound();
+                }
+
                 // TODO maybe fix later
                 //if(redactleIndex > 0){
                 //    document.getElementById("yesterday").innerHTML = `The answer to yesterday's Redactle was: ${atob(yesterday).replace(/ *\([^)]*\) */g, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/_/g," ").toLowerCase()}`;
@@ -416,7 +423,7 @@ function LogGuess(guess, populate) {
 function WinRound(populate) {
     gameIsActive = false;
     document.getElementById("userGuess").disabled = true;
-    if (!pageRevealed) {
+    if (true /*!pageRevealed*/) {   // for now this needs to be commented out because we don't have a function to fetch data withut baffling;
         const clap = new Audio('Clap.wav');
         clap.volume = 0.5;
         clap.addEventListener('canplaythrough', clap.play);
@@ -511,6 +518,7 @@ function RevealPage() {
     }
     pageRevealed = true;
 
+    SaveProgress();
     //PrepareForNextGame();
 }
 
@@ -598,6 +606,7 @@ function SaveProgress() {
     save.saveData.gameScores = gameScores;
     save.saveData.gameAccuracy = gameAccuracy;
     save.saveData.numbersRevealed = numbersRevealed;
+    save.saveData.pageRevealed = pageRevealed;
     save.prefs.hidingZero = hidingZero;
     save.prefs.selectedArticles = selectedArticles;
     save.prefs.hidingLog = hidingLog;
@@ -629,6 +638,7 @@ function newGame() {
     clickThruIndex = 0;
     clickThruNodes = []; // doesn't seem to be used
     save.saveData.numbersRevealed = false;
+    save.saveData.pageRevealed = false;
     localStorage.setItem("redactleSavet", JSON.stringify(save));
     $("#guessLogBody").empty();
     document.getElementById("userGuess").disabled = false;
