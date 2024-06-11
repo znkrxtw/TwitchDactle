@@ -215,6 +215,7 @@ async function fetchData(retry, artStr) {
                     var txt = this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                     if (!commonWords.includes(txt)) {
                         this.classList.toggle('baffled');
+                        this.setAttribute('word-length', txt.length);
                         let b = baffle(this).once().set({
                             characters: 'abcd'
                         });
@@ -500,24 +501,24 @@ function RevealPage() {
     }
     pageRevealed = true;
 
-    PrepareForNextGame();
+    //PrepareForNextGame();
 }
 
-async function PrepareForNextGame() {
-    var i = 0;
-    var elem = document.getElementById("NextGameBar");
-    var width = 1;
-    var id = setInterval(frame, 10);
-    function frame() {
-        if (width >= 100) {
-            clearInterval(id);
-            i = 0;
-        } else {
-            width++;
-            elem.style.width = width + "%";
-        }
-    }
-}
+// async function PrepareForNextGame() {
+//     var i = 0;
+//     var elem = document.getElementById("NextGameBar");
+//     var width = 1;
+//     var id = setInterval(frame, 10);
+//     function frame() {
+//         if (width >= 100) {
+//             clearInterval(id);
+//             i = 0;
+//         } else {
+//             width++;
+//             elem.style.width = width + "%";
+//         }
+//     }
+// }
 
 function BuildStats() {
     for (var i = statLogBody.rows.length - 1; i > 0; i--) {
