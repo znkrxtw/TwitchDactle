@@ -169,7 +169,8 @@ window.onload = function () {
 
     $(".doReveal").each(function () {
         $(this).click(function () {
-            RevealPage();
+            //RevealPage();
+            WinRound(false);
             revealModal.hide();
             document.querySelector("body").style.overflow = "auto";
         });
