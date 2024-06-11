@@ -133,6 +133,10 @@ window.onload = function () {
         document.querySelector("body").style.overflow = "hidden";
     });
 
+    $("#revealNumbersButton").click(function () {
+        revealNumbers(); 
+    });
+
     $(".closeInfo").each(function () {
         $(this).click(function () {
             infoModal.hide();
