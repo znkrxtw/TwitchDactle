@@ -142,4 +142,13 @@ const commonWords = ["a",
     "w",
     "x",
     "y",
-    "z"]
+    "z",
+    "this",
+    "that",
+    "such",
+    "least",
+    "most",
+    "best",
+    "other",
+    "another"
+]
