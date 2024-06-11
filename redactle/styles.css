@@ -253,8 +253,9 @@ td {
 .baffled:after {
   content: attr(word-length);
   position: absolute;
-  color: #0f0f0f;
+  color: #4d4d4d;
   font-family: monospace;
-  left: .1em;
+  left: 50%;
   top: 0;
+  transform: translate(-50%, 0);
 }
