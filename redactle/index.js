@@ -31,6 +31,8 @@ var articleName;
 var loadingIcon;
 
 var gameIsActive = false;
+var numbersRevealed = false;
+var baffledNumbers = [];
 
 function uuidv4() {
     return ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, c =>
@@ -57,7 +59,7 @@ function LoadSave() {
         playerID = uuidv4();
         articleName = getArticleName();
         redactleIndex = 0;
-        save = JSON.parse(JSON.stringify({ "saveData": { redactleIndex, articleName, guessedWords, gameWins, gameScores, gameAccuracy, gameAnswers }, "prefs": { hidingZero, hidingLog, pluralizing, selectedArticles, streamName }, "id": { playerID } }));
+        save = JSON.parse(JSON.stringify({ "saveData": { redactleIndex, articleName, guessedWords, gameWins, gameScores, gameAccuracy, gameAnswers, numbersRevealed, pageRevealed}, "prefs": { hidingZero, hidingLog, pluralizing, selectedArticles, streamName }, "id": { playerID } }));
     } else {
         save = JSON.parse(localStorage.getItem("redactleSavet"));
     }
@@ -84,6 +86,8 @@ function LoadSave() {
     }
 
     guessedWords = save.saveData.guessedWords;
+    numbersRevealed = save.saveData.numbersRevealed;
+    pageRevealed = save.saveData.pageRevealed;
 
     SaveProgress();
 
@@ -215,10 +219,15 @@ async function fetchData(retry, artStr) {
                     var txt = this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                     if (!commonWords.includes(txt)) {
                         this.classList.toggle('baffled');
+                        this.setAttribute('word-length', txt.length);
                         let b = baffle(this).once().set({
                             characters: 'abcd'
                         });
                         baffled.push([txt, b]);
+                        // keep track of numeric words 
+                        if (!isNaN(txt)) {
+                            baffledNumbers.push(b); 
+                        }
                     }
                 });
 
@@ -227,6 +236,9 @@ async function fetchData(retry, artStr) {
                         guessCounter += 1;
                         PerformGuess(guessedWords[i][0], true);
                     }
+                }
+                if (numbersRevealed) {
+                    revealNumbers();
                 }
 
                 if (pluralizing) {
@@ -252,6 +264,12 @@ async function fetchData(retry, artStr) {
                 }
 
                 document.getElementById("streamName").value = streamName;
+
+                // temporary solution - if the page is supposed to be revealed, reveal the text we just baffled
+                if (pageRevealed)
+                {
+                    WinRound();
+                }
 
                 // TODO maybe fix later
                 //if(redactleIndex > 0){
@@ -405,7 +423,7 @@ function LogGuess(guess, populate) {
 function WinRound(populate) {
     gameIsActive = false;
     document.getElementById("userGuess").disabled = true;
-    if (!pageRevealed) {
+    if (true /*!pageRevealed*/) {   // for now this needs to be commented out because we don't have a function to fetch data withut baffling;
         const clap = new Audio('Clap.wav');
         clap.volume = 0.5;
         clap.addEventListener('canplaythrough', clap.play);
@@ -500,24 +518,25 @@ function RevealPage() {
     }
     pageRevealed = true;
 
-    PrepareForNextGame();
+    SaveProgress();
+    //PrepareForNextGame();
 }
 
-async function PrepareForNextGame() {
-    var i = 0;
-    var elem = document.getElementById("NextGameBar");
-    var width = 1;
-    var id = setInterval(frame, 10);
-    function frame() {
-        if (width >= 100) {
-            clearInterval(id);
-            i = 0;
-        } else {
-            width++;
-            elem.style.width = width + "%";
-        }
-    }
-}
+// async function PrepareForNextGame() {
+//     var i = 0;
+//     var elem = document.getElementById("NextGameBar");
+//     var width = 1;
+//     var id = setInterval(frame, 10);
+//     function frame() {
+//         if (width >= 100) {
+//             clearInterval(id);
+//             i = 0;
+//         } else {
+//             width++;
+//             elem.style.width = width + "%";
+//         }
+//     }
+// }
 
 function BuildStats() {
     for (var i = statLogBody.rows.length - 1; i > 0; i--) {
@@ -586,6 +605,8 @@ function SaveProgress() {
     save.saveData.gameWins = gameWins;
     save.saveData.gameScores = gameScores;
     save.saveData.gameAccuracy = gameAccuracy;
+    save.saveData.numbersRevealed = numbersRevealed;
+    save.saveData.pageRevealed = pageRevealed;
     save.prefs.hidingZero = hidingZero;
     save.prefs.selectedArticles = selectedArticles;
     save.prefs.hidingLog = hidingLog;
@@ -608,6 +629,7 @@ function newGame() {
     save.prefs.streamName = streamName;
     save.prefs.pluralizing = pluralizing;
     baffled = [];
+    baffledNumbers = [];
     answer = [];
     guessCounter = 0;
     hitCounter = 0;
@@ -615,9 +637,12 @@ function newGame() {
     pageRevealed = false;
     clickThruIndex = 0;
     clickThruNodes = []; // doesn't seem to be used
+    save.saveData.numbersRevealed = false;
+    save.saveData.pageRevealed = false;
     localStorage.setItem("redactleSavet", JSON.stringify(save));
     $("#guessLogBody").empty();
     document.getElementById("userGuess").disabled = false;
+
     LoadSave();
     //location.reload();
 }
@@ -630,5 +655,23 @@ function getArticleName() {
     }
     return articles[Math.floor(Math.random() * articles.length)];
 
+}
+
+function revealNumbers() {
+    numbersRevealed = true;
+    for (var i = 0; i < baffledNumbers.length; i++) {
+        baffledNumbers[i].reveal();
+        baffledNumbers[i].elements[0].element.classList.remove("baffled");
+        var dataWord = baffledNumbers[i].elements[0].value; // the actural string that was hidden 
+        baffledNumbers[i].elements[0].element.setAttribute("data-word", dataWord);
+        if (answer.includes(dataWord)) {
+            answer = answer.filter(function (e) { return e !== dataWord })
+        }
+        if (answer.length == 0) {
+            WinRound(true);
+            break;
+        }
+    }
+    SaveProgress();
 }
 

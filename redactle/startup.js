@@ -133,6 +133,10 @@ window.onload = function () {
         document.querySelector("body").style.overflow = "hidden";
     });
 
+    $("#revealNumbersButton").click(function () {
+        revealNumbers(); 
+    });
+
     $(".closeInfo").each(function () {
         $(this).click(function () {
             infoModal.hide();
@@ -165,7 +169,8 @@ window.onload = function () {
 
     $(".doReveal").each(function () {
         $(this).click(function () {
-            RevealPage();
+            //RevealPage();
+            WinRound(false);
             revealModal.hide();
             document.querySelector("body").style.overflow = "auto";
         });

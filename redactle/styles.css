@@ -13,15 +13,16 @@ body {
 .super-parent-container {
     display: flex;
     flex-direction: column;
-    /* height: 100vh; */
+    height: 100vh;
     /* //grid-template-rows: 10% 90%; */
 }
 
 .parent-container {
     position: relative;
     display: grid;
-    height: 90vh;
+    height: 100vh;
     grid-template-columns: 70% 30%;
+    overflow-y: auto;
 }
 
 .article-container {
@@ -30,7 +31,7 @@ body {
 
 .guess-area {
     display: grid;
-    height: 90vh;
+    /*height: 90vh;*/
     grid-auto-rows: 50px auto;
     overflow-y: auto;
 }
@@ -243,4 +244,18 @@ td {
     #inGrp {
         padding-left: 0;
     }
+}
+
+.innerTxt.baffled {
+  position: relative;
+}
+
+.baffled:after {
+  content: attr(word-length);
+  position: absolute;
+  color: #4d4d4d;
+  font-family: monospace;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, 0);
 }
