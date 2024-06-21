@@ -54,7 +54,7 @@ body {
 
 .hide-nav-bar {
     position: absolute;
-    top: 0;
+    top: -4px;
     left: 50%;
 }
 
@@ -153,6 +153,66 @@ td {
     margin: auto;
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f100;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.hide-nav-bar-button {
+    border-left: solid 1px grey;
+    background: #0f0f0f;
+    color: grey;
+    border-top: 0;
+    line-height: 1;
+    margin-top: -2px;
+    border-bottom: solid 1px grey;
+    border-right: solid 1px grey;
+}
+
+.hide-nav-bar-button:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: transparent;
+}
+
+.innerTxt {
+    z-index: -1;
+}
+
+.guess-container {
+    display: flex;
+}
+
+.btn-guess {
+    color: grey;
+    border: solid 1px grey;
+    height: auto;
+    line-height: 1;
+    margin-left: 10px;
+
+}
+
+.btn-guess:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: transparent;
+}
+
 @media (min-width:992px) {
     .navbar.fixed-right {
         top: 0;
@@ -247,15 +307,15 @@ td {
 }
 
 .innerTxt.baffled {
-  position: relative;
+    position: relative;
 }
 
 .baffled:after {
-  content: attr(word-length);
-  position: absolute;
-  color: #4d4d4d;
-  font-family: monospace;
-  left: 50%;
-  top: 0;
-  transform: translate(-50%, 0);
+    content: attr(word-length);
+    position: absolute;
+    color: #4d4d4d;
+    font-family: monospace;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
 }

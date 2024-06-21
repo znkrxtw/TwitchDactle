@@ -57,12 +57,13 @@
                 <button class="btn btn-outline-secondary" type="button" id="newGame">New Game</button>
                 <button class="btn btn-outline-secondary btn-fancy-reveal" type="button" id="revealPageButton">Reveal
                     Page</button>
-                <button class="btn btn-outline-secondary btn-fancy-reveal" type="button" id="revealNumbersButton">Reveal Numbers</button>
+                <button class="btn btn-outline-secondary btn-fancy-reveal" type="button" id="revealNumbersButton">Reveal
+                    Numbers</button>
             </div>
         </nav>
         <div class="parent-container">
             <div class="hide-nav-bar">
-                <input type="checkbox" id="hideNavBar">
+                <button class="hide-nav-bar-button" id="hideNavBar">^</button>
             </div>
             <div class="article-container">
                 <div class="container container-lg" id="winText"></div>
@@ -73,11 +74,11 @@
             </div>
             <div class="guess-area">
                 <div class="input-container" id="inputHolder">
-                    <div id="inGrp">
+                    <div class="guess-container" id="inGrp">
                         <!-- <button type="button" id="backToTop">▲ Top</button> -->
                         <input type="text" aria-label="Text input" autofocus="" autocomplete="off" placeholder="Guess"
                             id="userGuess">
-                        <button class="guess-button" type="button" id="submitGuess">Guess</button>
+                        <button class="btn btn-guess" type="button" id="submitGuess">Guess</button>
                     </div>
                 </div>
                 <div class="guess-hit-container">
@@ -237,7 +238,8 @@
             <div class="modal-content text-dark">
                 <div class="modal-header">
                     <h5 class="modal-title" id="revealModalLabel">Reveal Page?</h5>
-                    <button type="button" class="btn-close closeReveal" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close closeReveal" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body closeReveal">
                     <div>You will cheat not only the game, but yourself.</div>

@@ -134,7 +134,7 @@ window.onload = function () {
     });
 
     $("#revealNumbersButton").click(function () {
-        revealNumbers(); 
+        revealNumbers();
     });
 
     $(".closeInfo").each(function () {
@@ -187,11 +187,14 @@ window.onload = function () {
 
     $("#hideNavBar").click(function () {
         let navBarHeight = $('#navBar');
+        let navBarButton = $('#hideNavBar')
         if (navBarHeight.css("display") != "none") {
             navBarHeight.css("display", "none");
+            navBarButton.text("v");
         }
         else {
             navBarHeight.css("display", "flex");
+            navBarButton.text("^");
         }
     })
 
