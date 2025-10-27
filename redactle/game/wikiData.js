@@ -1,4 +1,6 @@
-﻿RedactleGame.prototype.fetchData = async function (retry, artStr) {
+﻿export function WikiData(RedactleGame) {
+
+    RedactleGame.prototype.fetchData = async function (retry, artStr) {
         const article = retry ? artStr : atob(artStr);
         return await fetch('https://en.wikipedia.org/w/api.php?action=parse&format=json&page=' + article + '&prop=text&formatversion=2&origin=*')
             .then(resp => {
@@ -116,7 +118,7 @@
                         if (!commonWords.includes(txt)) {
                             el.classList.toggle('baffled');
                             el.setAttribute('word-length', txt.length);
-                            let b = baffle(el).once().set({ characters: 'abcd' });
+                            let b = baffle(el).once().set({characters: 'abcd'});
                             this.baffled.push([txt, b]);
                             if (!isNaN(txt)) {
                                 this.baffledNumbers.push(b);
@@ -170,3 +172,4 @@
                 alert("Something went wrong while loading the page. Try refreshing.");
             });
     }
+}

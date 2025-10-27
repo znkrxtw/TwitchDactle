@@ -1,4 +1,5 @@
 export class RedactleGame {
+
     constructor() {
         // DOM references
         this.wikiHolder = document.getElementById("wikiHolder");

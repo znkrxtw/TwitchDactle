@@ -1,4 +1,6 @@
-﻿        RedactleGame.prototype.removeHighlights= function(clearCur) {
+﻿export function UI(RedactleGame) {
+
+    RedactleGame.prototype.removeHighlights = function (clearCur) {
         if (clearCur) {
             this.currentlyHighlighted = null;
         }
@@ -13,12 +15,12 @@
         })
     }
 
-        // helper used in logGuess for robust retrieval (keeps logic isolated)
-    RedactleGame.prototype.getInnerTextFromRow= function(ctx, row, colIndex) {
+    // helper used in logGuess for robust retrieval (keeps logic isolated)
+    RedactleGame.prototype.getInnerTextFromRow = function (ctx, row, colIndex) {
         return row.getElementsByTagName('td')[colIndex].innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
-    RedactleGame.prototype.winRound= function (populate) {
+    RedactleGame.prototype.winRound = function (populate) {
         this.gameIsActive = false;
         document.getElementById("userGuess").disabled = true;
         if (true) {
@@ -35,7 +37,7 @@
                         value: ["🍆", "💧", "💦", "🥵", "🍑"]
                     }
                 },
-                origin: { y: 0.6 }
+                origin: {y: 0.6}
             });
             this.revealPage();
             if (!populate) {
@@ -58,18 +60,17 @@
         this.saveProgress();
     }
 
-    RedactleGame.prototype.shareResults= function () {
+    RedactleGame.prototype.shareResults = function () {
         const shareText = "I solved today's Redactle (#" + (this.redactleIndex + 1) + ") in " + this.gameScores[this.redactleIndex] + " guesses with an accuracy of " + this.currentAccuracy + "%. Played at https://www.redactle.com/";
         const copied = ClipboardJS.copy(shareText);
         if (copied) {
             alert("Results copied to clipboard. Thanks for playing!");
-        }
-        else {
+        } else {
             alert("Something went wrong trying to copy results to clipboard.");
         }
     }
 
-    RedactleGame.prototype.revealPage= function () {
+    RedactleGame.prototype.revealPage = function () {
         this.removeHighlights(false);
         for (var i = 0; i < this.baffled.length; i++) {
             this.baffled[i][1].reveal();
@@ -80,7 +81,7 @@
         this.saveProgress();
     }
 
-    RedactleGame.prototype.buildStats= function () {
+    RedactleGame.prototype.buildStats = function () {
         for (var i = this.statLogBody.rows.length - 1; i > 0; i--) {
             this.statLogBody.deleteRow(i);
         }
@@ -92,7 +93,7 @@
         }
     }
 
-    RedactleGame.prototype.hideZero= function () {
+    RedactleGame.prototype.hideZero = function () {
         this.hidingZero = true;
         this.saveProgress();
         $('.tableHits').each(function () {
@@ -102,14 +103,14 @@
         });
     }
 
-    RedactleGame.prototype.showZero= function () {
+    RedactleGame.prototype.showZero = function () {
         this.hidingZero = false;
         this.saveProgress();
         $('.hiddenRow').each(function () {
             $(this).removeClass('hiddenRow');
         });
     }
-    
+
     RedactleGame.prototype.revealNumbers = function () {
         this.numbersRevealed = true;
         for (var i = 0; i < this.baffledNumbers.length; i++) {
@@ -118,7 +119,9 @@
             var dataWord = this.baffledNumbers[i].elements[0].value;
             this.baffledNumbers[i].elements[0].element.setAttribute("data-word", dataWord);
             if (this.answer.includes(dataWord)) {
-                this.answer = this.answer.filter(function (e) { return e !== dataWord })
+                this.answer = this.answer.filter(function (e) {
+                    return e !== dataWord
+                })
             }
             if (this.answer.length == 0) {
                 this.winRound(true);
@@ -128,7 +131,7 @@
         this.saveProgress();
     }
 
-        RedactleGame.prototype.logGuess= function(guess, populate) {
+    RedactleGame.prototype.logGuess = function (guess, populate) {
         if (this.hidingZero) {
             this.hideZero();
         }
@@ -198,3 +201,4 @@
             });
         }
     }
+}
