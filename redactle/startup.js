@@ -1,4 +1,3 @@
-var pluralizing;
 var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
 var settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
 var statsModal = new bootstrap.Modal(document.getElementById('statsModal'));
@@ -9,21 +8,19 @@ window.onload = function () {
     input.addEventListener("keyup", function (event) {
         if (event.keyCode === 13 && event.shiftKey) {
             event.preventDefault();
-            if ($('#autoPlural').is(':checked')) {
-                pluralizing = false;
-            } else {
-                pluralizing = true;
+            const pluralizing = ($('#autoPlural').is(':checked') !== event.shiftKey); // checkbox XOR shift
+            if (!document.getElementById("userGuess").value == '' || !document.getElementById("userGuess").value == document.getElementById("userGuess").defaultValue) {
+                var allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
+                EnterGuess(allGuesses, pluralizing);
             }
-            document.getElementById("submitGuess").click();
             input.value = '';
         } else {
             if (event.keyCode === 13) {
-                if ($('#autoPlural').is(':checked')) {
-                    pluralizing = true;
-                } else {
-                    pluralizing = false;
+                const pluralizing = $('#autoPlural').is(':checked');
+                if (!document.getElementById("userGuess").value == '' || !document.getElementById("userGuess").value == document.getElementById("userGuess").defaultValue) {
+                    var allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
+                    EnterGuess(allGuesses, pluralizing);
                 }
-                document.getElementById("submitGuess").click();
                 input.value = '';
             }
         }
@@ -31,14 +28,13 @@ window.onload = function () {
 
     $("#submitGuess").click(function () {
         if (!document.getElementById("userGuess").value == '' || !document.getElementById("userGuess").value == document.getElementById("userGuess").defaultValue) {
-            var allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')]
-
-            EnterGuess(allGuesses);
+            var allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
+            const pluralizing = $('#autoPlural').is(':checked');
+            EnterGuess(allGuesses, pluralizing);
         }
     });
 
-    function EnterGuess(allGuesses) {
-
+    function EnterGuess(allGuesses, pluralizing) {
         if (pluralizing) {
             var pluralGuess = pluralize(allGuesses[0]);
             var singularGuess = pluralize.singular(allGuesses[0]);
@@ -50,17 +46,16 @@ window.onload = function () {
             }
         }
         for (var i = allGuesses.length - 1; i > -1; i--) {
-            PerformGuess(allGuesses[i], false);
+            game.performGuess(allGuesses[i], false);
         }
-        //pluralizing = false;
     }
 
     $(function () {
         $('#hideZero').click(function () {
             if ($('#hideZero').is(':checked')) {
-                HideZero();
+                game.hideZero();
             } else {
-                ShowZero();
+                game.showZero();
             }
         });
     });
@@ -87,33 +82,32 @@ window.onload = function () {
 
     $(function () {
         $('#autoPlural').click(function () {
-            if ($('#autoPlural').is(':checked')) {
-                pluralizing = true;
-            } else {
-                pluralizing = false;
-            }
+            // store pref to game instance
+            game.pluralizing = $('#autoPlural').is(':checked');
+            game.saveProgress();
         });
     });
 
     $(function () {
         $('#selectArticle').on("change", function () {
             if ($('#selectArticle').val() === 'custom') {
-                selectedArticles = 'custom';
+                game.selectedArticles = 'custom';
             } else {
-                selectedArticles = 'standard';
+                game.selectedArticles = 'standard';
             }
+            game.saveProgress();
         });
     });
 
     $(function () {
         $('#streamName').on("change", function () {
-            streamName = $('#streamName').val();
-            SaveProgress();
+            game.streamName = $('#streamName').val();
+            game.saveProgress();
         });
     });
 
     $("#statsBtn").click(function () {
-        BuildStats();
+        game.buildStats();
         statsModal.show();
         document.querySelector("body").style.overflow = "hidden";
     })
@@ -134,7 +128,7 @@ window.onload = function () {
     });
 
     $("#revealNumbersButton").click(function () {
-        revealNumbers();
+        game.revealNumbers();
     });
 
     $(".closeInfo").each(function () {
@@ -149,7 +143,7 @@ window.onload = function () {
             settingsModal.hide();
             document.querySelector("body").style.overflow = "auto";
             connectStream();
-            SaveProgress();
+            game.saveProgress();
         });
     });
 
@@ -169,8 +163,7 @@ window.onload = function () {
 
     $(".doReveal").each(function () {
         $(this).click(function () {
-            //RevealPage();
-            WinRound(false);
+            game.winRound(false);
             revealModal.hide();
             document.querySelector("body").style.overflow = "auto";
         });
@@ -182,7 +175,7 @@ window.onload = function () {
     });
 
     $("#newGame").click(function () {
-        newGame();
+        game.newGame();
     });
 
     $("#hideNavBar").click(function () {
@@ -220,18 +213,19 @@ window.onload = function () {
 
     ComfyJS.onChat = (user, message, flags, self, extra) => {
         const firstWord = new Array(message.split(' ')[0]);
-        EnterGuess(firstWord);
+        const pluralizing = $('#autoPlural').is(':checked');
+        EnterGuess(firstWord, pluralizing);
     };
 
     ComfyJS.onCommand = (user, command, message, flags, extra) => {
-        if (command === "next" && pageRevealed === true) {
-            newGame();
+        if (command === "next" && game.pageRevealed === true) {
+            game.newGame();
         }
     };
 
     function connectStream() {
-        if (save.prefs.streamName) {
-            ComfyJS.Init(save.prefs.streamName);
+        if (game && game.save && game.save.prefs && game.save.prefs.streamName) {
+            ComfyJS.Init(game.save.prefs.streamName);
         }
     }
 

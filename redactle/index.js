@@ -137,7 +137,7 @@ class RedactleGame {
                     }
                     var e = document.getElementsByClassName('mw-parser-output');
                     if (seeAlso) {
-                        alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
+                        const alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
                         for (var i = alsoIndex; i < e[0].children.length; i++) {
                             e[0].removeChild(e[0].children[i]);
                         }
@@ -219,14 +219,12 @@ class RedactleGame {
 
                     this.gameIsActive = true;
 
-                    $(".mw-parser-output span").not(".punctuation").each(() => {
-                        var txt = this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                    $(".mw-parser-output span").not(".punctuation").each((i, el) => {
+                        var txt = el.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                         if (!commonWords.includes(txt)) {
-                            this.classList.toggle('baffled');
-                            this.setAttribute('word-length', txt.length);
-                            let b = baffle(this).once().set({
-                                characters: 'abcd'
-                            });
+                            el.classList.toggle('baffled');
+                            el.setAttribute('word-length', txt.length);
+                            let b = baffle(el).once().set({ characters: 'abcd' });
                             this.baffled.push([txt, b]);
                             if (!isNaN(txt)) {
                                 this.baffledNumbers.push(b);
@@ -610,28 +608,6 @@ class RedactleGame {
 // instantiate and expose a single game instance
 const game = new RedactleGame();
 game.loadSave();
-
-// expose original global function names to preserve compatibility
-window.uuidv4 = () => game.uuidv4();
-window.median = (numbers) => game.median(numbers);
-window.average = (array) => game.average(array);
-window.LoadSave = () => game.loadSave();
-window.fetchData = (retry, artStr) => game.fetchData(retry, artStr);
-window.PerformGuess = (gw, p) => game.performGuess(gw, p);
-window.LogGuess = (g, p) => game.logGuess(g, p);
-window.WinRound = (p) => game.winRound(p);
-window.ShareResults = () => game.shareResults();
-window.RevealPage = () => game.revealPage();
-window.BuildStats = () => game.buildStats();
-window.HideZero = () => game.hideZero();
-window.ShowZero = () => game.showZero();
-window.SelectArticlesStandard = () => game.selectArticlesStandard();
-window.SelectArticlesCustom = () => game.selectArticlesCustom();
-window.RemoveHighlights = (c) => game.removeHighlights(c);
-window.SaveProgress = () => game.saveProgress();
-window.newGame = () => game.newGame();
-window.getArticleName = () => game.getArticleName();
-window.revealNumbers = () => game.revealNumbers();
 
 // also expose instance for debugging if needed
 window.redactleGame = game;
