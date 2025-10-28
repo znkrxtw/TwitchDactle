@@ -2,6 +2,7 @@
 
     constructor(game) {
         this.game = game;
+        this.wikiHolder = game.wikiHolder;
     }
 
     async fetchData(retry, artStr) {
@@ -15,14 +16,14 @@
             })
             .then(receivedJson => {
                 this.conting = true;
-                var cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/\<small\>/g, '').replace(/\<\/small\>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
+                const cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/<small>/g, '').replace(/<\/small>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
                 this.wikiHolder.style.display = "none";
                 this.wikiHolder.innerHTML = cleanText;
-                var redirecting = document.getElementsByClassName('redirectMsg');
+                const redirecting = document.getElementsByClassName('redirectMsg');
                 if (redirecting.length > 0) {
-                    var redirURL = $('.redirectText')[0].firstChild.firstChild.innerHTML.replace(/ /g, "_");
+                    const redirectURL = document.querySelectorAll('.redirectText')[0].firstChild.firstChild.innerHTML.replace(/ /g, "_");
                     this.conting = false;
-                    this.fetchData(!this.conting, redirURL);
+                    this.fetchData(!this.conting, redirectURL);
                 }
                 if (this.conting) {
                     let seeAlso;
@@ -33,85 +34,90 @@
                     } else if (document.getElementById("References") != null) {
                         seeAlso = document.getElementById("References").parentNode;
                     }
-                    var e = document.getElementsByClassName('mw-parser-output');
+                    const elements = document.getElementsByClassName('mw-parser-output');
                     if (seeAlso) {
                         const alsoIndex = Array.prototype.indexOf.call(seeAlso.parentNode.children, seeAlso);
-                        for (var i = alsoIndex; i < e[0].children.length; i++) {
-                            e[0].removeChild(e[0].children[i]);
+                        for (let i = alsoIndex; i < elements[0].children.length; i++) {
+                            elements[0].removeChild(elements[0].children[i]);
                         }
                     }
-                    var all_bad_elements = this.wikiHolder.querySelectorAll("[rel='mw-deduplicated-inline-style'], [title='Name at birth'], [aria-labelledby='micro-periodic-table-title'], .barbox, .wikitable, .clade, .Expand_section, .nowrap, .IPA, .thumb, .mw-empty-elt, .mw-editsection, .nounderlines, .nomobile, .searchaux, #toc, .sidebar, .sistersitebox, .noexcerpt, #External_links, #Further_reading, .hatnote, .haudio, .portalbox, .mw-references-wrap, .infobox, .unsolved, .navbox, .metadata, .refbegin, .reflist, .mw-stack, #Notes, #References, .reference, .quotebox, .collapsible, .uncollapsed, .mw-collapsible, .mw-made-collapsible, .mbox-small, .mbox, #coordinates, .succession-box, .noprint, .mwe-math-element, .cs1-ws-icon");
+                    const all_bad_elements = this.game.wikiHolder.querySelectorAll("[rel='mw-deduplicated-inline-style'], [title='Name at birth'], [aria-labelledby='micro-periodic-table-title'], .barbox, .wikitable, .clade, .Expand_section, .nowrap, .IPA, .thumb, .mw-empty-elt, .mw-editsection, .nounderlines, .nomobile, .searchaux, #toc, .sidebar, .sistersitebox, .noexcerpt, #External_links, #Further_reading, .hatnote, .haudio, .portalbox, .mw-references-wrap, .infobox, .unsolved, .navbox, .metadata, .refbegin, .reflist, .mw-stack, #Notes, #References, .reference, .quotebox, .collapsible, .uncollapsed, .mw-collapsible, .mw-made-collapsible, .mbox-small, .mbox, #coordinates, .succession-box, .noprint, .mwe-math-element, .cs1-ws-icon");
 
-                    for (var i = 0; i < all_bad_elements.length; i++) {
+                    for (let i = 0; i < all_bad_elements.length; i++) {
                         all_bad_elements[i].remove();
                     }
 
-                    var b = document.getElementsByTagName('b');
-                    while (b.length) {
-                        var parent = b[0].parentNode;
-                        while (b[0].firstChild) {
-                            parent.insertBefore(b[0].firstChild, b[0]);
+                    const bElement = document.getElementsByTagName('b');
+                    while (bElement.length) {
+                        let parent = bElement[0].parentNode;
+                        while (bElement[0].firstChild) {
+                            parent.insertBefore(bElement[0].firstChild, bElement[0]);
                         }
-                        parent.removeChild(b[0]);
+                        parent.removeChild(bElement[0]);
                     }
-                    var a = this.wikiHolder.getElementsByTagName('a');
-                    while (a.length) {
-                        var parent = a[0].parentNode;
-                        while (a[0].firstChild) {
-                            parent.insertBefore(a[0].firstChild, a[0]);
+                    const aElement = this.wikiHolder.getElementsByTagName('a');
+                    while (aElement.length) {
+                        let parent = aElement[0].parentNode;
+                        while (aElement[0].firstChild) {
+                            parent.insertBefore(aElement[0].firstChild, aElement[0]);
                         }
-                        parent.removeChild(a[0]);
+                        parent.removeChild(aElement[0]);
                     }
-                    var bq = document.getElementsByTagName('blockquote');
-                    for (var i = 0; i < bq.length; i++) {
-                        bq[i].innerHTML = bq[i].innerHTML.replace(/<[^>]*>?/gm, '');
+                    const blockquote = document.getElementsByTagName('blockquote');
+                    for (let i = 0; i < blockquote.length; i++) {
+                        blockquote[i].innerHTML = blockquote[i].innerHTML.replace(/<[^>]*>?/gm, '');
                     }
-                    var s = document.getElementsByTagName('sup')
-                    while (s.length) {
-                        s[0].remove();
+                    const sup = document.getElementsByTagName('sup')
+                    while (sup.length) {
+                        sup[0].remove();
                     }
-                    var ex = document.getElementsByClassName('excerpt');
-                    while (ex.length) {
-                        ex[0].remove();
+                    const excerpt = document.getElementsByClassName('excerpt');
+                    while (excerpt.length) {
+                        excerpt[0].remove();
                     }
-                    $(e[0]).find('[title]').each(function () {
-                        this.removeAttribute('title');
+
+                    elements[0].querySelectorAll('[title]').forEach(title => {
+                        title.removeAttribute('title');
                     })
-                    $(e[0]).find('.mw-headline').contents().unwrap();
-                    var titleHolder = document.createElement("h1");
-                    var titleTxt = article.replace(/_/g, ' ');
+
+                    elements[0].querySelectorAll('.mw-headline').forEach(h => {
+                        const parent = h.parentNode;
+                        while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                        parent.removeChild(h);
+                    });
+
+                    let titleHolder = document.createElement("h1");
+                    let titleTxt = article.replace(/_/g, ' ');
                     titleHolder.innerHTML = titleTxt;
-                    e[0].prepend(titleHolder);
+                    elements[0].prepend(titleHolder);
+
                     this.ansStr = titleTxt.replace(/ *\([^)]*\) */g, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                     this.answer = this.ansStr.match(/\b(\w+'\w+|\w+)\b/g);
                     this.answer = this.answer.filter(function (el) {
                         return commonWords.indexOf(el) < 0;
                     });
-                    e[0].innerHTML = e[0].innerHTML.replace(/\(; /g, '(').replace(/\(, /g, '(').replace(/\(, /g, '(').replace(/: ​;/g, ';').replace(/ \(\) /g, ' ').replace(/<\/?span[^>]*>/g, "");
-                    ;
-                    $(e[0]).find('*').removeAttr('class').removeAttr('style');
 
-                    $(e[0]).find("p, blockquote, h1, h2, table, li, i, cite, span").contents().filter(function (i, el) {
-                        return el.nodeType === 3;
-                    }).each(function (i, el) {
-                        const $el = $(el);
-                        const replaced = $el.text().replace(/([\.,:()\[\]?!;`\~\-\u2013\—&*"])/g, '<span class="punctuation">$1</span>');
-                        el.replaceWith(replaced);
+                    elements[0].innerHTML = elements[0].innerHTML.replace(/\(; /g, '(').replace(/\(, /g, '(').replace(/\(, /g, '(').replace(/: ​;/g, ';').replace(/ \(\) /g, ' ').replace(/<\/?span[^>]*>/g, "");
+
+                    elements[0].querySelectorAll('*').forEach(el => {
+                        el.removeAttribute('class');
+                        el.removeAttribute('style');
                     });
 
-                    e[0].innerHTML = e[0].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/(<style.*<\/style>)/g, "").replace(/(<span class="punctuation">.<\/span>)|(^|<\/?[^>]+>|\s+)|([^\s<]+)/g, '$1$2<span class="innerTxt">$3</span>').replace('<<span class="innerTxt">h1>', '<h1><span class="innerTxt">');
-                    $(e[0]).find('*:empty').remove();
+                    this.punctuation(elements);
+
+                    elements[0].innerHTML = elements[0].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/(<style.*<\/style>)/g, "").replace(/(<span class="punctuation">.<\/span>)|(^|<\/?[^>]+>|\s+)|([^\s<]+)/g, '$1$2<span class="innerTxt">$3</span>').replace('<<span class="innerTxt">h1>', '<h1><span class="innerTxt">');
+                    elements[0].querySelectorAll('*:empty').forEach(el => el.remove());
                     this.wikiHolder.innerHTML = this.wikiHolder.innerHTML.replace(/<!--(?!>)[\S\s]*?-->/g, '');
 
                     // make the check for rejection here
                     // repackage the words into a text and send it to rejectArticle
-                    // (i'm too lazy to do it properly, !thisisfine)
-                    var cleanerText = [...this.wikiHolder.getElementsByClassName("innerTxt")].reduce((text, item) => text + ' ' + item.textContent, "");
+                    const cleanerText = [...this.wikiHolder.getElementsByClassName("innerTxt")].reduce((text, item) => text + ' ' + item.textContent, "");
                     if (rejectArticle(cleanerText)) {
                         // the article must be skipped
                         // wait 2 seconds and start a new game
-                        console.log("Skipping the article " + this.articleName);
-                        setTimeout(() => this.newGame(), 2000);
+                        console.log("Skipping the article " + this.game.profileData.articleName);
+                        setTimeout(() => this.game.profileData.newGame(), 2000);
                         return;
                     }
 
@@ -175,5 +181,33 @@
                 console.error("Error in fetch", err);
                 alert("Something went wrong while loading the page. Try refreshing.");
             });
+    }
+
+
+    punctuation(elements) {
+
+        const root = elements[0];
+        if (!root) return;
+
+        // punctuation characters to wrap
+        const rx = /([.,:()\[\]?!;`~\-\u2013—&*"])/g;
+        const selectors = "p, blockquote, h1, h2, table, li, i, cite, span";
+
+        // For each container, replace text node content with a fragment that has punctuation wrapped
+        root.querySelectorAll(selectors).forEach(container => {
+            // snapshot child nodes because we'll modify them
+            Array.from(container.childNodes).forEach(node => {
+                if (node.nodeType !== Node.TEXT_NODE) return;
+                const text = node.nodeValue;
+                if (!text || !text.trim()) return;
+
+                const replaced = text.replace(rx, '<span class="punctuation">$1</span>');
+                // only replace when something changed
+                if (replaced === text) return;
+
+                const frag = document.createRange().createContextualFragment(replaced);
+                node.parentNode.replaceChild(frag, node);
+            });
+        });
     }
 }

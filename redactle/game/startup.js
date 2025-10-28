@@ -6,6 +6,7 @@ class StartUp {
         this.wikiData = wikiData;
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', this.init);
+
         } else {
             this.init();
         }
@@ -189,12 +190,12 @@ class StartUp {
             }
         };
 
-        function connectStream() {
-            if (game && game.save && game.save.prefs && game.save.prefs.streamName) {
-                ComfyJS.Init(game.save.prefs.streamName);
-            }
-        }
+        //connectStream();
+    }
 
-        connectStream();
+    connectStream() {
+        if (game && game.save && game.save.prefs && game.save.prefs.streamName) {
+            ComfyJS.Init(game.save.prefs.streamName);
+        }
     }
 }

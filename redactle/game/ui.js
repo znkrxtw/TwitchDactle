@@ -1,7 +1,8 @@
 ﻿class UI {
 
-    constructor() {
-
+    constructor(game, profileData) {
+        this.game = game;
+        this.profileData = profileData;
     }
 
     removeHighlights(clearCur) {
@@ -9,15 +10,15 @@
             this.currentlyHighlighted = null;
         }
 
-        document.querySelectorAll('.highlighted').forEach(function (el) {
+        this.game.highlightedGuess.forEach(function (el) {
             el.classList.remove('highlighted');
         });
 
-        document.querySelectorAll('.superHighlighted').forEach(function (el) {
+        this.game.superHighlightedGuess.forEach(function (el) {
             el.classList.remove('superHighlighted');
         })
 
-        document.querySelectorAll('#guessLogBody .table-secondary').forEach(function (el) {
+        this.game.guessBody.forEach(function (el) {
             el.classList.remove('table-secondary');
         })
     }
@@ -29,7 +30,7 @@
 
     winRound(populate) {
         this.gameIsActive = false;
-        document.getElementById("userGuess").disabled = true;
+        this.game.userGuess.disabled = true;
         const clap = new Audio('Clap.wav');
         clap.volume = 0.5;
         clap.addEventListener('canplaythrough', clap.play);
@@ -63,7 +64,7 @@
             }
         }
 
-        this.saveProgress();
+        this.profileData.saveProgress();
     }
 
     shareResults() {
@@ -141,7 +142,7 @@
         if (this.hidingZero) {
             this.hideZero();
         }
-        var newRow = this.guessLogBody.insertRow(0);
+        let newRow = this.guessLogBody.insertRow(0);
         newRow.class = 'curGuess';
         newRow.setAttribute('data-guess', guess[0]);
         if (!populate) {

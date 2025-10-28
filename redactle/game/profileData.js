@@ -1,19 +1,28 @@
 class ProfileData {
 
-    constructor(utility, logic, wikiData) {
+    constructor(utility, logic) {
         this.utility = utility;
         this.logic = logic;
-        this.wikiData = wikiData;
         this.saveString = "redactleSave";
         this.save = {}
 
-        this.playerId = null;
+        //save data
+        this.playerID = null;
         this.redactleIndex = null;
         this.guessedWords = [];
         this.numbersRevealed = false;
         this.gameAccuracy = [];
         this.articleName = undefined;
         this.pageRevealed = false;
+        this.gameWins = [];
+        this.gameScores = [];
+        this.gameAnswers = [];
+
+        //save prefs
+        this.hidingZero = false;
+        this.hidingLog = false;
+        this.selectedArticles = 'standard';
+        this.streamName = '';
     }
 
     // ensure save structure exists and is normalized
@@ -35,7 +44,7 @@ class ProfileData {
         localStorage.setItem(this.saveString, JSON.stringify(this.save));
     }
 
-    async newGame(game) {
+    newGame(game) {
         localStorage.clear();
         this.save.saveData.redactleIndex += 1;
         this.save.saveData.articleName = this.logic.getArticleName();
@@ -55,23 +64,23 @@ class ProfileData {
         document.querySelector("#guessLogBody").empty();
         document.getElementById("userGuess").disabled = false;
 
-        await this.loadSave(game);
+        this.loadSave(game);
     }
 
     initSave(game) {
-        this.save.saveData.gameWins = game.gameWins;
-        this.save.saveData.gameScores = game.gameScores;
-        this.save.saveData.gameAccuracy = game.gameAccuracy;
-        this.save.saveData.prefs.hidingZero = game.hidingZero;
-        this.save.saveData.prefs.selectedArticles = game.selectedArticles;
-        this.save.saveData.prefs.hidingLog = game.hidingLog;
-        this.save.saveData.prefs.streamName = game.streamName;
-        this.save.saveData.prefs.pluralizing = window.pluralizing;
+        this.save.saveData.gameWins = this.gameWins;
+        this.save.saveData.gameScores = this.gameScores;
+        this.save.saveData.gameAccuracy = this.gameAccuracy;
+        this.save.prefs.hidingZero = this.hidingZero;
+        this.save.prefs.selectedArticles = this.selectedArticles;
+        this.save.prefs.hidingLog = this.hidingLog;
+        this.save.prefs.streamName = this.streamName;
+        this.save.prefs.pluralizing = window.pluralizing;
     }
 
-    async loadSave(game) {
+    loadSave() {
         if (localStorage.getItem(this.saveString) === null) {
-            this.createNewSave(game)
+            this.createNewSave()
         } else {
             this.save = JSON.parse(localStorage.getItem(this.saveString));
         }
@@ -79,22 +88,22 @@ class ProfileData {
 
         this.playerID = this.save.id.playerID;
         this.articleName = this.save.saveData.articleName;
-        game.hidingZero = this.save.prefs.hidingZero;
-        game.hidingLog = this.save.prefs.hidingLog;
-        game.selectedArticles = this.save.prefs.selectedArticles;
+        this.hidingZero = this.save.prefs.hidingZero;
+        this.hidingLog = this.save.prefs.hidingLog;
+        this.selectedArticles = this.save.prefs.selectedArticles;
         window.pluralizing = this.save.prefs.pluralizing;
-        game.streamName = this.save.prefs.streamName;
-        game.redactleIndex = this.save.saveData.redactleIndex;
-        game.gameWins = this.save.saveData.gameWins;
-        game.gameScores = this.save.saveData.gameScores;
-        game.gameAccuracy = this.save.saveData.gameAccuracy;
-        game.gameAnswers = this.save.saveData.gameAnswers;
-        const gameDelta = game.redactleIndex - this.save.saveData.gameWins.length;
+        this.streamName = this.save.prefs.streamName;
+        this.redactleIndex = this.save.saveData.redactleIndex;
+        this.gameWins = this.save.saveData.gameWins;
+        this.gameScores = this.save.saveData.gameScores;
+        this.gameAccuracy = this.save.saveData.gameAccuracy;
+        this.gameAnswers = this.save.saveData.gameAnswers;
+        const gameDelta = this.redactleIndex - this.save.saveData.gameWins.length;
         for (let i = 0; i < gameDelta; i++) {
-            game.gameWins.push(0);
-            game.gameScores.push(0);
-            game.gameAccuracy.push(0);
-            game.gameAnswers.push('');
+            this.gameWins.push(0);
+            this.gameScores.push(0);
+            this.gameAccuracy.push(0);
+            this.gameAnswers.push('');
         }
 
         this.guessedWords = this.save.saveData.guessedWords;
@@ -102,35 +111,33 @@ class ProfileData {
         this.pageRevealed = this.save.saveData.pageRevealed;
 
         this.saveProgress();
-
-        await this.wikiData.fetchData(true, game.articleName);
     }
 
-    createNewSave(game) {
+    createNewSave() {
         localStorage.clear();
-        game.playerID = this.utility.uuidv4();
-        game.articleName = this.logic.getArticleName();
-        game.redactleIndex = 0;
+        this.playerID = this.utility.uuidv4();
+        this.articleName = this.logic.getArticleName();
+        this.redactleIndex = 0;
         this.save = JSON.parse(JSON.stringify({
             "saveData": {
-                redactleIndex: game.redactleIndex,
-                articleName: game.articleName,
-                guessedWords: game.guessedWords,
-                gameWins: game.gameWins,
-                gameScores: game.gameScores,
-                gameAccuracy: game.gameAccuracy,
-                gameAnswers: game.gameAnswers,
-                numbersRevealed: game.numbersRevealed,
-                pageRevealed: game.pageRevealed
+                redactleIndex: this.redactleIndex,
+                articleName: this.articleName,
+                guessedWords: this.guessedWords,
+                gameWins: this.gameWins,
+                gameScores: this.gameScores,
+                gameAccuracy: this.gameAccuracy,
+                gameAnswers: this.gameAnswers,
+                numbersRevealed: this.numbersRevealed,
+                pageRevealed: this.pageRevealed
             },
             "prefs": {
-                hidingZero: game.hidingZero,
-                hidingLog: game.hidingLog,
+                hidingZero: this.hidingZero,
+                hidingLog: this.hidingLog,
                 pluralizing: window.pluralizing,
-                selectedArticles: game.selectedArticles,
-                streamName: game.streamName
+                selectedArticles: this.selectedArticles,
+                streamName: this.streamName
             },
-            "id": {playerID: game.playerID}
+            "id": {playerID: this.playerID}
         }));
     }
 }
