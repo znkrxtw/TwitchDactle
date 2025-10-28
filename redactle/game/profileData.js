@@ -1,6 +1,16 @@
-export function ProfileData(RedactleGame) {
+class ProfileData {
 
-    RedactleGame.prototype.saveProgress = function () {
+    constructor(game) {
+        this.game = game;
+
+        // expose methods on the game instance so existing callers keep working
+        //this.game.saveProgress = (gw, p) => this.saveProgress(gw, p);
+        this.game.newGame = () => this.newGame();
+        this.game.getArticleName = () => this.getArticleName();
+        this.game.loadSave = () => this.loadSave();
+    }
+
+    saveProgress() {
         this.save.saveData.redactleIndex = this.redactleIndex;
         this.save.saveData.articleName = this.articleName;
         this.save.saveData.guessedWords = this.guessedWords;
@@ -17,7 +27,7 @@ export function ProfileData(RedactleGame) {
         localStorage.setItem("redactleSavet", JSON.stringify(this.save));
     }
 
-    RedactleGame.prototype.newGame = function () {
+    newGame() {
         localStorage.clear();
         this.save.saveData.redactleIndex += 1;
         this.save.saveData.articleName = this.getArticleName();
@@ -48,16 +58,7 @@ export function ProfileData(RedactleGame) {
         this.loadSave();
     }
 
-    RedactleGame.prototype.getArticleName = function () {
-        var e = document.getElementById("selectArticle");
-        var value = e.value;
-        if (value === 'custom') {
-            return customArticles[Math.floor(Math.random() * customArticles.length)];
-        }
-        return articles[Math.floor(Math.random() * articles.length)];
-    }
-
-    RedactleGame.prototype.loadSave = function () {
+    loadSave() {
         if (localStorage.getItem("redactleSavet") === null) {
             localStorage.clear();
             this.playerID = this.uuidv4();
@@ -101,8 +102,8 @@ export function ProfileData(RedactleGame) {
         this.gameScores = this.save.saveData.gameScores;
         this.gameAccuracy = this.save.saveData.gameAccuracy;
         this.gameAnswers = this.save.saveData.gameAnswers;
-        var gameDelta = this.redactleIndex - this.save.saveData.gameWins.length;
-        for (var i = 0; i < gameDelta; i++) {
+        const gameDelta = this.redactleIndex - this.save.saveData.gameWins.length;
+        for (let i = 0; i < gameDelta; i++) {
             this.gameWins.push(0);
             this.gameScores.push(0);
             this.gameAccuracy.push(0);

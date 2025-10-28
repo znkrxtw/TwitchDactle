@@ -1,6 +1,15 @@
-export function attachStartup(game) {
-    // ensure wiring happens after DOM is ready
-    const run = () => {
+class StartUp {
+
+    constructor() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', this.init);
+        } else {
+            this.init();
+        }
+    }
+
+    init() {
+
         const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
         const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
         const statsModal = new bootstrap.Modal(document.getElementById('statsModal'));
@@ -33,18 +42,6 @@ export function attachStartup(game) {
                 EnterGuess(allGuesses, pluralizing);
             }
         });
-
-        function EnterGuess(allGuesses, pluralizing) {
-            if (pluralizing) {
-                const pluralGuess = pluralize(allGuesses[0]);
-                const singularGuess = pluralize.singular(allGuesses[0]);
-                if (pluralGuess !== allGuesses[0]) allGuesses.push(pluralGuess);
-                if (singularGuess !== allGuesses[0]) allGuesses.push(singularGuess);
-            }
-            for (let i = allGuesses.length - 1; i > -1; i--) {
-                game.performGuess(allGuesses[i], false);
-            }
-        }
 
         $('#hideZero').on('click', function () {
             if ($(this).is(':checked')) game.hideZero(); else game.showZero();
@@ -158,20 +155,20 @@ export function attachStartup(game) {
         });
 
         window.onclick = function (event) {
-            if (event.target == document.getElementById("infoModal")) {
+            if (event.target === document.getElementById("infoModal")) {
                 infoModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             }
-            if (event.target == document.getElementById("settingsModal")) {
+            if (event.target === document.getElementById("settingsModal")) {
                 settingsModal.hide();
                 document.querySelector("body").style.overflow = "auto";
                 connectStream();
             }
-            if (event.target == document.getElementById("statsModal")) {
+            if (event.target === document.getElementById("statsModal")) {
                 statsModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             }
-            if (event.target == document.getElementById("revealModal")) {
+            if (event.target === document.getElementById("revealModal")) {
                 revealModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             }
@@ -196,16 +193,5 @@ export function attachStartup(game) {
         }
 
         connectStream();
-    };
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', run);
-    } else {
-        run();
     }
-
-    // return a teardown function if you later want to remove handlers
-    return function detach() {
-        // optional: remove handlers if needed (not implemented)
-    };
 }

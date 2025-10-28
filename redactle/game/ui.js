@@ -1,44 +1,50 @@
-﻿export function UI(RedactleGame) {
+﻿class UI {
 
-    RedactleGame.prototype.removeHighlights = function (clearCur) {
+    constructor() {
+
+    }
+
+    removeHighlights(clearCur) {
         if (clearCur) {
             this.currentlyHighlighted = null;
         }
-        $('.highlighted').each(function () {
-            $(this).removeClass('highlighted');
+
+        document.querySelectorAll('.highlighted').forEach(function (el) {
+            el.classList.remove('highlighted');
         });
-        $('.superHighlighted').each(function () {
-            this.classList.remove('superHighlighted');
-        });
-        $('#guessLogBody').find('.table-secondary').each(function () {
-            this.classList.remove('table-secondary');
+
+        document.querySelectorAll('.superHighlighted').forEach(function (el) {
+            el.classList.remove('superHighlighted');
+        })
+
+        document.querySelectorAll('#guessLogBody .table-secondary').forEach(function (el) {
+            el.classList.remove('table-secondary');
         })
     }
 
     // helper used in logGuess for robust retrieval (keeps logic isolated)
-    RedactleGame.prototype.getInnerTextFromRow = function (ctx, row, colIndex) {
+    getInnerTextFromRow(ctx, row, colIndex) {
         return row.getElementsByTagName('td')[colIndex].innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
-    RedactleGame.prototype.winRound = function (populate) {
+    winRound(populate) {
         this.gameIsActive = false;
         document.getElementById("userGuess").disabled = true;
-        if (true) {
-            const clap = new Audio('Clap.wav');
-            clap.volume = 0.5;
-            clap.addEventListener('canplaythrough', clap.play);
-            confetti({
-                scalar: 10,
-                particleCount: 50,
-                spread: 70,
-                shapes: ["emoji", "image"],
-                shapeOptions: {
-                    emoji: {
-                        value: ["🍆", "💧", "💦", "🥵", "🍑"]
-                    }
-                },
-                origin: {y: 0.6}
-            });
+        const clap = new Audio('Clap.wav');
+        clap.volume = 0.5;
+        clap.addEventListener('canplaythrough', clap.play);
+        confetti({
+            scalar: 10,
+            particleCount: 50,
+            spread: 70,
+            shapes: ["emoji", "image"],
+            shapeOptions: {
+                emoji: {
+                    value: ["🍆", "💧", "💦", "🥵", "🍑"]
+                }
+            },
+            origin: {y: 0.6}
+        }).then(() => {
             this.revealPage();
             if (!populate) {
                 this.gameScores[this.redactleIndex] = this.guessedWords.length;
@@ -46,13 +52,13 @@
                 this.gameAnswers[this.redactleIndex] = this.ansStr;
                 this.gameWins[this.redactleIndex] = 1;
             }
-        }
-        var streakCount = 0;
-        for (var i = this.gameWins.length; i > -1; i--) {
-            if (this.gameWins[i] == 1) {
+        });
+        let streakCount = 0;
+        for (let i = this.gameWins.length; i > -1; i--) {
+            if (this.gameWins[i] === 1) {
                 streakCount += 1;
             }
-            if (this.gameWins[i] == 0) {
+            if (this.gameWins[i] === 0) {
                 break;
             }
         }
@@ -60,7 +66,7 @@
         this.saveProgress();
     }
 
-    RedactleGame.prototype.shareResults = function () {
+    shareResults() {
         const shareText = "I solved today's Redactle (#" + (this.redactleIndex + 1) + ") in " + this.gameScores[this.redactleIndex] + " guesses with an accuracy of " + this.currentAccuracy + "%. Played at https://www.redactle.com/";
         const copied = ClipboardJS.copy(shareText);
         if (copied) {
@@ -70,7 +76,7 @@
         }
     }
 
-    RedactleGame.prototype.revealPage = function () {
+    revealPage() {
         this.removeHighlights(false);
         for (var i = 0; i < this.baffled.length; i++) {
             this.baffled[i][1].reveal();
@@ -81,29 +87,29 @@
         this.saveProgress();
     }
 
-    RedactleGame.prototype.buildStats = function () {
-        for (var i = this.statLogBody.rows.length - 1; i > 0; i--) {
+    buildStats() {
+        for (let i = this.statLogBody.rows.length - 1; i > 0; i--) {
             this.statLogBody.deleteRow(i);
         }
-        for (var i = 0; i < this.gameWins.length; i++) {
-            if (this.gameWins[i] == 1) {
-                var statRow = this.statLogBody.insertRow(1);
+        for (let i = 0; i < this.gameWins.length; i++) {
+            if (this.gameWins[i] === 1) {
+                const statRow = this.statLogBody.insertRow(1);
                 statRow.innerHTML = '<td>' + (i + 1) + '</td><td>' + this.gameAnswers[i] + '</td><td>' + this.gameScores[i] + '</td><td>' + this.gameAccuracy[i] + '%</td>';
             }
         }
     }
 
-    RedactleGame.prototype.hideZero = function () {
+    hideZero() {
         this.hidingZero = true;
         this.saveProgress();
         $('.tableHits').each(function () {
-            if (this.innerHTML == '0') {
+            if (this.innerHTML === '0') {
                 $(this).parent().addClass('hiddenRow');
             }
         });
     }
 
-    RedactleGame.prototype.showZero = function () {
+    showZero() {
         this.hidingZero = false;
         this.saveProgress();
         $('.hiddenRow').each(function () {
@@ -111,19 +117,19 @@
         });
     }
 
-    RedactleGame.prototype.revealNumbers = function () {
+    revealNumbers() {
         this.numbersRevealed = true;
-        for (var i = 0; i < this.baffledNumbers.length; i++) {
+        for (let i = 0; i < this.baffledNumbers.length; i++) {
             this.baffledNumbers[i].reveal();
             this.baffledNumbers[i].elements[0].element.classList.remove("baffled");
-            var dataWord = this.baffledNumbers[i].elements[0].value;
+            const dataWord = this.baffledNumbers[i].elements[0].value;
             this.baffledNumbers[i].elements[0].element.setAttribute("data-word", dataWord);
             if (this.answer.includes(dataWord)) {
                 this.answer = this.answer.filter(function (e) {
                     return e !== dataWord
                 })
             }
-            if (this.answer.length == 0) {
+            if (this.answer.length === 0) {
                 this.winRound(true);
                 break;
             }
@@ -131,7 +137,7 @@
         this.saveProgress();
     }
 
-    RedactleGame.prototype.logGuess = function (guess, populate) {
+    logGuess(guess, populate) {
         if (this.hidingZero) {
             this.hideZero();
         }
@@ -150,26 +156,26 @@
         if (guess[1] > 0) {
             $(newRow).on('click', (e) => {
                 e.preventDefault();
-                var inTxt = this.getInnerTextFromRow(this, newRow, 1);
-                var allInstances = this.wikiHolder.querySelectorAll('[data-word="' + inTxt + '"]');
+                const inTxt = this.getInnerTextFromRow(this, newRow, 1);
+                const allInstances = this.wikiHolder.querySelectorAll('[data-word="' + inTxt + '"]');
                 if (this.currentlyHighlighted == null) {
                     this.clickThruIndex = 0;
                     this.currentlyHighlighted = inTxt;
                     newRow.classList.add('table-secondary');
                     $('.innerTxt').each(function () {
-                        if (this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() == this.currentlyHighlighted) {
+                        if (this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() === this.currentlyHighlighted) {
                             $(this).addClass('highlighted');
                         }
                     });
                 } else {
-                    if (inTxt == this.currentlyHighlighted) {
+                    if (inTxt === this.currentlyHighlighted) {
 
                     } else {
                         this.clickThruIndex = 0;
                         this.removeHighlights(false);
                         newRow.classList.add('table-secondary');
                         $('.innerTxt').each(() => {
-                            if (this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() == inTxt) {
+                            if (this.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() === inTxt) {
                                 this.classList.add('highlighted');
                             }
                         })

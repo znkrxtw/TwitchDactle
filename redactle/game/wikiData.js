@@ -1,6 +1,10 @@
-﻿export function WikiData(RedactleGame) {
+﻿class WikiData {
 
-    RedactleGame.prototype.fetchData = async function (retry, artStr) {
+    constructor() {
+
+    }
+
+    async fetchData(retry, artStr) {
         const article = retry ? artStr : atob(artStr);
         return await fetch('https://en.wikipedia.org/w/api.php?action=parse&format=json&page=' + article + '&prop=text&formatversion=2&origin=*')
             .then(resp => {
@@ -90,8 +94,8 @@
                     $(e[0]).find("p, blockquote, h1, h2, table, li, i, cite, span").contents().filter(function (i, el) {
                         return el.nodeType === 3;
                     }).each(function (i, el) {
-                        var $el = $(el);
-                        var replaced = $el.text().replace(/([\.,:()\[\]?!;`\~\-\u2013\—&*"])/g, '<span class="punctuation">$1</span>');
+                        const $el = $(el);
+                        const replaced = $el.text().replace(/([\.,:()\[\]?!;`\~\-\u2013\—&*"])/g, '<span class="punctuation">$1</span>');
                         el.replaceWith(replaced);
                     });
 
@@ -114,7 +118,7 @@
                     this.gameIsActive = true;
 
                     $(".mw-parser-output span").not(".punctuation").each((i, el) => {
-                        var txt = el.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                        const txt = el.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
                         if (!commonWords.includes(txt)) {
                             el.classList.toggle('baffled');
                             el.setAttribute('word-length', txt.length);

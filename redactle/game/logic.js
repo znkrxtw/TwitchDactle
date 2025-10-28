@@ -1,6 +1,15 @@
-export function Logic(RedactleGame) {
+class Logic {
 
-    RedactleGame.prototype.performGuess = function (guessedWord, populate) {
+    constructor(game) {
+        this.game = game;
+
+        // expose methods on the game instance so existing callers keep working
+        this.game.performGuess = (guessedWord, populate) => this.performGuess(guessedWord, populate);
+        this.game.selectArticlesStandard = () => this.selectArticlesStandard();
+        this.game.selectArticlesCustom = () => this.selectArticlesCustom();
+    }
+
+    performGuess(guessedWord, populate) {
         if (!this.gameIsActive) {
             return;
         }
@@ -59,15 +68,34 @@ export function Logic(RedactleGame) {
         }
     }
 
-    RedactleGame.prototype.selectArticlesStandard = function () {
+    selectArticlesStandard() {
         this.selectedArticles = 'standard';
-        this.saveProgress();
+        this.game.saveProgress();
     }
 
-    RedactleGame.prototype.selectArticlesCustom = function () {
+    selectArticlesCustom() {
         this.selectedArticles = 'custom';
         this.saveProgress();
     }
 
+    getArticleName() {
+        var e = document.getElementById("selectArticle");
+        var value = e.value;
+        if (value === 'custom') {
+            return customArticles[Math.floor(Math.random() * customArticles.length)];
+        }
+        return articles[Math.floor(Math.random() * articles.length)];
+    }
 
+    EnterGuess(allGuesses, pluralizing) {
+        if (pluralizing) {
+            const pluralGuess = pluralize(allGuesses[0]);
+            const singularGuess = pluralize.singular(allGuesses[0]);
+            if (pluralGuess !== allGuesses[0]) allGuesses.push(pluralGuess);
+            if (singularGuess !== allGuesses[0]) allGuesses.push(singularGuess);
+        }
+        for (let i = allGuesses.length - 1; i > -1; i--) {
+            game.performGuess(allGuesses[i], false);
+        }
+    }
 }

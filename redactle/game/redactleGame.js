@@ -1,4 +1,7 @@
-export class RedactleGame {
+import {Utility} from "./utility";
+import {WikiData} from "./wikiData";
+
+class RedactleGame {
 
     constructor() {
         // DOM references
@@ -39,5 +42,25 @@ export class RedactleGame {
         this.gameIsActive = false;
         this.numbersRevealed = false;
         this.baffledNumbers = [];
+
+        this.startUp = new StartUp(this);
+        this.logic = new Logic(this);
+        this.profileData = new ProfileData(this);
+        this.ui = new UI();
+        this.utility = new Utility();
+        this.wikiData = new WikiData();
+
+        this.init();
+    }
+
+    init() {
+
+        this.startUp.init();
+        this.profileData.loadSave();
+
+
+        window.redactleGame = this;
     }
 }
+
+window.RedactleGame = new RedactleGame();
