@@ -6,6 +6,7 @@ class RedactleGame {
 
         // game state
         this.baffled = [];
+        this.baffledNumbers = [];
         this.answer = [];
         this.ansStr = undefined;
         this.guessCounter = 0;
@@ -22,7 +23,6 @@ class RedactleGame {
         this.yesterday = undefined;
         this.loadingIcon = undefined;
         this.gameIsActive = false;
-        this.baffledNumbers = [];
 
         this.ui = new UI(this);
         this.logic = new Logic(this, this.ui);
@@ -47,6 +47,8 @@ class RedactleGame {
     }
 
     getReferences() {
+
+        this.test = window.baffle
         // DOM references
         this.wikiHolder = document.getElementById("wikiHolder");
         this.guessLogBody = document.getElementById("guessLogBody");

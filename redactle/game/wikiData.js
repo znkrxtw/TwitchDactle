@@ -121,20 +121,8 @@
                         return;
                     }
 
-                    this.gameIsActive = true;
-
-                    $(".mw-parser-output span").not(".punctuation").each((i, el) => {
-                        const txt = el.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                        if (!commonWords.includes(txt)) {
-                            el.classList.toggle('baffled');
-                            el.setAttribute('word-length', txt.length);
-                            let b = baffle(el).once().set({characters: 'abcd'});
-                            this.baffled.push([txt, b]);
-                            if (!isNaN(txt)) {
-                                this.baffledNumbers.push(b);
-                            }
-                        }
-                    });
+                    this.game.gameIsActive = true;
+                    this.extracted();
 
                     if (this.guessedWords.length > 0) {
                         for (var i = 0; i < this.guessedWords.length; i++) {
@@ -183,6 +171,53 @@
             });
     }
 
+
+    extracted() {
+        const root = this.wikiHolder.querySelector('.mw-parser-output') || this.wikiHolder;
+        if (!root) return;
+
+        // ensure storage arrays exist
+        this.game.baffled = this.game.baffled || [];
+        this.game.baffledNumbers = this.game.baffledNumbers || [];
+
+        // select all spans that are not already punctuation
+        const nodes = root.querySelectorAll('span:not(.punctuation)');
+        nodes.forEach(el => {
+            // skip elements already revealed (data-word set) or empty nodes
+            if (el.hasAttribute('data-word')) return;
+            const raw = el.textContent;
+            if (!raw || !raw.trim()) return;
+
+            const txt = raw.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            if (commonWords.includes(txt)) return;
+
+            // mark as baffled and record length (same behavior as original)
+            el.classList.add('baffled');
+            el.setAttribute('word-length', txt.length);
+
+            // create baffle instance and store it
+            const b = window.baffle(el).once().set({ characters: 'abcd' });
+            this.game.baffled.push([txt, b]);
+
+            // track numeric tokens separately (preserves original logic)
+            if (!isNaN(txt)) {
+                this.game.baffledNumbers.push(b);
+            }
+        });
+
+        // $(".mw-parser-output span").not(".punctuation").each((i, el) => {
+        //     const txt = el.innerHTML.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        //     if (!commonWords.includes(txt)) {
+        //         el.classList.toggle('baffled');
+        //         el.setAttribute('word-length', txt.length);
+        //         let b = baffle(el).once().set({characters: 'abcd'});
+        //         this.game.baffled.push([txt, b]);
+        //         if (!isNaN(txt)) {
+        //             this.game.baffledNumbers.push(b);
+        //         }
+        //     }
+        // });
+    }
 
     punctuation(elements) {
 
