@@ -47,8 +47,6 @@ class RedactleGame {
     }
 
     getReferences() {
-
-        this.test = window.baffle
         // DOM references
         this.wikiHolder = document.getElementById("wikiHolder");
         this.guessLogBody = document.getElementById("guessLogBody");
