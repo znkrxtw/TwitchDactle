@@ -1,6 +1,3 @@
-import {Utility} from "./utility";
-import {WikiData} from "./wikiData";
-
 class RedactleGame {
 
     constructor() {
@@ -11,7 +8,6 @@ class RedactleGame {
 
         // game state
         this.baffled = [];
-        this.guessedWords = [];
         this.answer = [];
         this.ansStr = undefined;
         this.guessCounter = 0;
@@ -22,42 +18,39 @@ class RedactleGame {
         this.currentlyHighlighted = undefined;
         this.gameWins = [];
         this.gameScores = [];
-        this.gameAccuracy = [];
+
         this.gameAnswers = [];
         this.hitCounter = 0;
         this.currentAccuracy = -1;
-        this.save = {};
-        this.pageRevealed = false;
+
         this.clickThruIndex = 0;
         this.clickThruNodes = [];
         this.redirectable = undefined;
         this.conting = undefined;
-        this.playerID = undefined;
         this.ses = undefined;
-        this.redactleIndex = undefined;
         this.yesterday = undefined;
-        this.articleName = undefined;
+
         this.loadingIcon = undefined;
 
         this.gameIsActive = false;
-        this.numbersRevealed = false;
+
         this.baffledNumbers = [];
 
-        this.startUp = new StartUp(this);
-        this.logic = new Logic(this);
-        this.profileData = new ProfileData(this);
         this.ui = new UI();
+        this.logic = new Logic(this, this.ui);
         this.utility = new Utility();
-        this.wikiData = new WikiData();
+        this.wikiData = new WikiData(this);
+        this.profileData = new ProfileData(this.utility, this.logic, this.wikiData);
+        this.startUp = new StartUp(this, this.logic, this.wikiData);
 
-        this.init();
+        this.init().then();
     }
 
-    init() {
+    async init() {
+
+        await this.profileData.loadSave(this);
 
         this.startUp.init();
-        this.profileData.loadSave();
-
 
         window.redactleGame = this;
     }

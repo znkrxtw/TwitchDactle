@@ -1,7 +1,7 @@
 ﻿class WikiData {
 
-    constructor() {
-
+    constructor(game) {
+        this.game = game;
     }
 
     async fetchData(retry, artStr) {

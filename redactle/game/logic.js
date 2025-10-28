@@ -1,7 +1,8 @@
 class Logic {
 
-    constructor(game) {
+    constructor(game, ui) {
         this.game = game;
+        this.ui = ui;
 
         // expose methods on the game instance so existing callers keep working
         this.game.performGuess = (guessedWord, populate) => this.performGuess(guessedWord, populate);
@@ -10,17 +11,17 @@ class Logic {
     }
 
     performGuess(guessedWord, populate) {
-        if (!this.gameIsActive) {
+        if (!this.game.gameIsActive) {
             return;
         }
         this.clickThruIndex = 0;
-        this.removeHighlights(false);
+        this.ui.removeHighlights(false);
         const normGuess = guessedWord.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
         if (commonWords.includes(normGuess)) {
             // do nothing
         } else {
             let alreadyGuessed = false;
-            for (let i = 0; i < this.guessedWords.length; i++) {
+            for (let i = 0; i < this.game.guessedWords.length; i++) {
                 if (this.guessedWords[i][0] === normGuess) {
                     alreadyGuessed = true;
                 }
@@ -87,7 +88,7 @@ class Logic {
         return articles[Math.floor(Math.random() * articles.length)];
     }
 
-    EnterGuess(allGuesses, pluralizing) {
+    enterGuess(allGuesses, pluralizing) {
         if (pluralizing) {
             const pluralGuess = pluralize(allGuesses[0]);
             const singularGuess = pluralize.singular(allGuesses[0]);
@@ -95,7 +96,7 @@ class Logic {
             if (singularGuess !== allGuesses[0]) allGuesses.push(singularGuess);
         }
         for (let i = allGuesses.length - 1; i > -1; i--) {
-            game.performGuess(allGuesses[i], false);
+            this.performGuess(allGuesses[i], false);
         }
     }
 }

@@ -1,113 +1,100 @@
 class ProfileData {
 
-    constructor(game) {
-        this.game = game;
+    constructor(utility, logic, wikiData) {
+        this.utility = utility;
+        this.logic = logic;
+        this.wikiData = wikiData;
+        this.saveString = "redactleSave";
+        this.save = {}
 
-        // expose methods on the game instance so existing callers keep working
-        //this.game.saveProgress = (gw, p) => this.saveProgress(gw, p);
-        this.game.newGame = () => this.newGame();
-        this.game.getArticleName = () => this.getArticleName();
-        this.game.loadSave = () => this.loadSave();
+        this.playerId = null;
+        this.redactleIndex = null;
+        this.guessedWords = [];
+        this.numbersRevealed = false;
+        this.gameAccuracy = [];
+        this.articleName = undefined;
+        this.pageRevealed = false;
     }
 
-    saveProgress() {
+    // ensure save structure exists and is normalized
+    ensureSave() {
+        if (!this.save) this.save = { saveData: {}, prefs: {}, id: {} };
+        if (!this.save.saveData) this.save.saveData = {};
+        if (!this.save.prefs) this.save.prefs = {};
+        if (!this.save.id) this.save.id = {};
+    }
+
+    saveProgress(game) {
+        this.ensureSave();
         this.save.saveData.redactleIndex = this.redactleIndex;
         this.save.saveData.articleName = this.articleName;
         this.save.saveData.guessedWords = this.guessedWords;
-        this.save.saveData.gameWins = this.gameWins;
-        this.save.saveData.gameScores = this.gameScores;
-        this.save.saveData.gameAccuracy = this.gameAccuracy;
         this.save.saveData.numbersRevealed = this.numbersRevealed;
         this.save.saveData.pageRevealed = this.pageRevealed;
-        this.save.prefs.hidingZero = this.hidingZero;
-        this.save.prefs.selectedArticles = this.selectedArticles;
-        this.save.prefs.hidingLog = this.hidingLog;
-        this.save.prefs.streamName = this.streamName;
-        this.save.prefs.pluralizing = window.pluralizing;
-        localStorage.setItem("redactleSavet", JSON.stringify(this.save));
+        this.initSave(game);
+        localStorage.setItem(this.saveString, JSON.stringify(this.save));
     }
 
-    newGame() {
+    async newGame(game) {
         localStorage.clear();
         this.save.saveData.redactleIndex += 1;
-        this.save.saveData.articleName = this.getArticleName();
+        this.save.saveData.articleName = this.logic.getArticleName();
         this.save.saveData.guessedWords = [];
-        this.save.saveData.gameWins = this.gameWins;
-        this.save.saveData.gameScores = this.gameScores;
-        this.save.saveData.gameAccuracy = this.gameAccuracy;
-        this.save.prefs.hidingZero = this.hidingZero;
-        this.save.prefs.selectedArticles = this.selectedArticles;
-        this.save.prefs.hidingLog = this.hidingLog;
-        this.save.prefs.streamName = this.streamName;
-        this.save.prefs.pluralizing = window.pluralizing;
-        this.baffled = [];
-        this.baffledNumbers = [];
-        this.answer = [];
-        this.guessCounter = 0;
-        this.hitCounter = 0;
-        this.currentAccuracy = -1;
-        this.pageRevealed = false;
-        this.clickThruIndex = 0;
-        this.clickThruNodes = [];
+        this.initSave(game);
+        game.baffled = [];
+        game.baffledNumbers = [];
+        game.answer = [];
+        game.guessCounter = 0;
+        game.hitCounter = 0;
+        game.currentAccuracy = -1;
+        game.clickThruIndex = 0;
+        game.clickThruNodes = [];
         this.save.saveData.numbersRevealed = false;
         this.save.saveData.pageRevealed = false;
-        localStorage.setItem("redactleSavet", JSON.stringify(this.save));
-        $("#guessLogBody").empty();
+        localStorage.setItem(this.saveString, JSON.stringify(this.save));
+        document.querySelector("#guessLogBody").empty();
         document.getElementById("userGuess").disabled = false;
 
-        this.loadSave();
+        await this.loadSave(game);
     }
 
-    loadSave() {
-        if (localStorage.getItem("redactleSavet") === null) {
-            localStorage.clear();
-            this.playerID = this.uuidv4();
-            this.articleName = this.getArticleName();
-            this.redactleIndex = 0;
-            this.save = JSON.parse(JSON.stringify({
-                "saveData": {
-                    redactleIndex: this.redactleIndex,
-                    articleName: this.articleName,
-                    guessedWords: this.guessedWords,
-                    gameWins: this.gameWins,
-                    gameScores: this.gameScores,
-                    gameAccuracy: this.gameAccuracy,
-                    gameAnswers: this.gameAnswers,
-                    numbersRevealed: this.numbersRevealed,
-                    pageRevealed: this.pageRevealed
-                },
-                "prefs": {
-                    hidingZero: this.hidingZero,
-                    hidingLog: this.hidingLog,
-                    pluralizing: window.pluralizing,
-                    selectedArticles: this.selectedArticles,
-                    streamName: this.streamName
-                },
-                "id": {playerID: this.playerID}
-            }));
+    initSave(game) {
+        this.save.saveData.gameWins = game.gameWins;
+        this.save.saveData.gameScores = game.gameScores;
+        this.save.saveData.gameAccuracy = game.gameAccuracy;
+        this.save.saveData.prefs.hidingZero = game.hidingZero;
+        this.save.saveData.prefs.selectedArticles = game.selectedArticles;
+        this.save.saveData.prefs.hidingLog = game.hidingLog;
+        this.save.saveData.prefs.streamName = game.streamName;
+        this.save.saveData.prefs.pluralizing = window.pluralizing;
+    }
+
+    async loadSave(game) {
+        if (localStorage.getItem(this.saveString) === null) {
+            this.createNewSave(game)
         } else {
-            this.save = JSON.parse(localStorage.getItem("redactleSavet"));
+            this.save = JSON.parse(localStorage.getItem(this.saveString));
         }
-        localStorage.setItem("redactleSavet", JSON.stringify(this.save));
+        localStorage.setItem(this.saveString, JSON.stringify(this.save));
 
         this.playerID = this.save.id.playerID;
         this.articleName = this.save.saveData.articleName;
-        this.hidingZero = this.save.prefs.hidingZero;
-        this.hidingLog = this.save.prefs.hidingLog;
-        this.selectedArticles = this.save.prefs.selectedArticles;
+        game.hidingZero = this.save.prefs.hidingZero;
+        game.hidingLog = this.save.prefs.hidingLog;
+        game.selectedArticles = this.save.prefs.selectedArticles;
         window.pluralizing = this.save.prefs.pluralizing;
-        this.streamName = this.save.prefs.streamName;
-        this.redactleIndex = this.save.saveData.redactleIndex;
-        this.gameWins = this.save.saveData.gameWins;
-        this.gameScores = this.save.saveData.gameScores;
-        this.gameAccuracy = this.save.saveData.gameAccuracy;
-        this.gameAnswers = this.save.saveData.gameAnswers;
-        const gameDelta = this.redactleIndex - this.save.saveData.gameWins.length;
+        game.streamName = this.save.prefs.streamName;
+        game.redactleIndex = this.save.saveData.redactleIndex;
+        game.gameWins = this.save.saveData.gameWins;
+        game.gameScores = this.save.saveData.gameScores;
+        game.gameAccuracy = this.save.saveData.gameAccuracy;
+        game.gameAnswers = this.save.saveData.gameAnswers;
+        const gameDelta = game.redactleIndex - this.save.saveData.gameWins.length;
         for (let i = 0; i < gameDelta; i++) {
-            this.gameWins.push(0);
-            this.gameScores.push(0);
-            this.gameAccuracy.push(0);
-            this.gameAnswers.push('');
+            game.gameWins.push(0);
+            game.gameScores.push(0);
+            game.gameAccuracy.push(0);
+            game.gameAnswers.push('');
         }
 
         this.guessedWords = this.save.saveData.guessedWords;
@@ -116,7 +103,35 @@ class ProfileData {
 
         this.saveProgress();
 
-        this.fetchData(true, this.articleName);
+        await this.wikiData.fetchData(true, game.articleName);
+    }
+
+    createNewSave(game) {
+        localStorage.clear();
+        game.playerID = this.utility.uuidv4();
+        game.articleName = this.logic.getArticleName();
+        game.redactleIndex = 0;
+        this.save = JSON.parse(JSON.stringify({
+            "saveData": {
+                redactleIndex: game.redactleIndex,
+                articleName: game.articleName,
+                guessedWords: game.guessedWords,
+                gameWins: game.gameWins,
+                gameScores: game.gameScores,
+                gameAccuracy: game.gameAccuracy,
+                gameAnswers: game.gameAnswers,
+                numbersRevealed: game.numbersRevealed,
+                pageRevealed: game.pageRevealed
+            },
+            "prefs": {
+                hidingZero: game.hidingZero,
+                hidingLog: game.hidingLog,
+                pluralizing: window.pluralizing,
+                selectedArticles: game.selectedArticles,
+                streamName: game.streamName
+            },
+            "id": {playerID: game.playerID}
+        }));
     }
 }
 

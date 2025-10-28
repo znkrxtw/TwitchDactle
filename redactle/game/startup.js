@@ -1,6 +1,9 @@
 class StartUp {
 
-    constructor() {
+    constructor(game, logic, wikiData) {
+        this.game = game;
+        this.logic = logic;
+        this.wikiData = wikiData;
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', this.init);
         } else {
@@ -22,14 +25,14 @@ class StartUp {
                 const pluralizing = ($('#autoPlural').is(':checked') !== event.shiftKey);
                 if (document.getElementById("userGuess").value.trim() !== '') {
                     const allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
-                    EnterGuess(allGuesses, pluralizing);
+                    this.logic.enterGuess(allGuesses, pluralizing);
                 }
                 input.value = '';
             } else if (event.keyCode === 13) {
                 const pluralizing = $('#autoPlural').is(':checked');
                 if (document.getElementById("userGuess").value.trim() !== '') {
                     const allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
-                    EnterGuess(allGuesses, pluralizing);
+                    this.logic.enterGuess(allGuesses, pluralizing);
                 }
                 input.value = '';
             }
@@ -39,7 +42,7 @@ class StartUp {
             if (document.getElementById("userGuess").value.trim() !== '') {
                 const allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
                 const pluralizing = $('#autoPlural').is(':checked');
-                EnterGuess(allGuesses, pluralizing);
+                this.logic.enterGuess(allGuesses, pluralizing);
             }
         });
 
@@ -138,8 +141,8 @@ class StartUp {
             document.documentElement.scrollTop = 0;
         });
 
-        $("#newGame").click(function () {
-            game.newGame();
+        $("#newGame").click(async function () {
+            await this.profileData.newGame(this.game);
         });
 
         $("#hideNavBar").click(function () {
