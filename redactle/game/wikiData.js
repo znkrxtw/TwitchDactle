@@ -3,6 +3,9 @@
     constructor(game) {
         this.game = game;
         this.wikiHolder = game.wikiHolder;
+        this.profileData = game.profileData;
+        this.ui = game.ui;
+        this.logic = game.logic;
     }
 
     async fetchData(retry, artStr) {
@@ -124,14 +127,14 @@
                     this.game.gameIsActive = true;
                     this.extracted();
 
-                    if (this.guessedWords.length > 0) {
-                        for (var i = 0; i < this.guessedWords.length; i++) {
-                            this.guessCounter += 1;
-                            this.performGuess(this.guessedWords[i][0], true);
+                    if (this.profileData.guessedWords.length > 0) {
+                        for (var i = 0; i < this.profileData.guessedWords.length; i++) {
+                            this.game.guessCounter += 1;
+                            this.logic.performGuess(this.profileData.guessedWords[i][0], true);
                         }
                     }
-                    if (this.numbersRevealed) {
-                        this.revealNumbers();
+                    if (this.profileData.numbersRevealed) {
+                        this.ui.revealNumbers();
                     }
 
                     if (window.pluralizing) {
@@ -140,26 +143,27 @@
                         document.getElementById("autoPlural").checked = false;
                     }
 
-                    if (this.hidingZero) {
+                    if (this.profileData.hidingZero) {
                         document.getElementById("hideZero").checked = true;
-                        this.hideZero();
+                        this.ui.hideZero();
                     } else {
                         document.getElementById("hideZero").checked = false;
-                        this.showZero();
+                        this.ui.showZero();
                     }
 
-                    if (this.selectedArticles === 'custom') {
+                    if (this.profileData.selectedArticles === 'custom') {
                         document.getElementById("selectArticle").value = 'custom';
-                        this.selectArticlesCustom();
+                        this.logic.selectArticlesCustom();
                     } else {
                         document.getElementById("selectArticle").value = 'standard';
-                        this.selectArticlesStandard();
+                        this.logic.selectArticlesStandard();
                     }
 
-                    document.getElementById("streamName").value = this.streamName;
+                    document.getElementById("streamName").value = this.profileData.streamName;
 
-                    if (this.pageRevealed) {
-                        this.winRound(true);
+                    if (this.ui.pageRevealed) {
+                        this.ui.winRound(true);
+                        this.profileData.saveProgress();
                     }
 
                     this.wikiHolder.style.display = "flex";

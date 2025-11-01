@@ -1,8 +1,7 @@
 ﻿class UI {
 
-    constructor(game, profileData) {
+    constructor(game) {
         this.game = game;
-        this.profileData = profileData;
     }
 
     removeHighlights(clearCur) {
@@ -63,18 +62,6 @@
                 break;
             }
         }
-
-        this.profileData.saveProgress();
-    }
-
-    shareResults() {
-        const shareText = "I solved today's Redactle (#" + (this.redactleIndex + 1) + ") in " + this.gameScores[this.redactleIndex] + " guesses with an accuracy of " + this.currentAccuracy + "%. Played at https://www.redactle.com/";
-        const copied = ClipboardJS.copy(shareText);
-        if (copied) {
-            alert("Results copied to clipboard. Thanks for playing!");
-        } else {
-            alert("Something went wrong trying to copy results to clipboard.");
-        }
     }
 
     revealPage() {
@@ -84,8 +71,6 @@
             this.baffled[i][1].elements[0].element.classList.remove("baffled");
         }
         this.pageRevealed = true;
-
-        this.saveProgress();
     }
 
     buildStats() {
@@ -102,19 +87,19 @@
 
     hideZero() {
         this.hidingZero = true;
-        this.saveProgress();
-        $('.tableHits').each(function () {
-            if (this.innerHTML === '0') {
-                $(this).parent().addClass('hiddenRow');
+        document.querySelectorAll('.tableHits').forEach((el) => {
+            if (el.innerHTML === '0') {
+                el.parentElement.classList.add('hiddenRow');
             }
         });
     }
 
     showZero() {
         this.hidingZero = false;
-        this.saveProgress();
-        $('.hiddenRow').each(function () {
-            $(this).removeClass('hiddenRow');
+        document.querySelectorAll('.hiddenRow').forEach((el) => {
+            if (el.innerHTML === '0') {
+                el.parentElement.classList.remove('hiddenRow');
+            }
         });
     }
 
@@ -135,7 +120,6 @@
                 break;
             }
         }
-        this.saveProgress();
     }
 
     logGuess(guess, populate) {

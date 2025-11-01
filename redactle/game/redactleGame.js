@@ -25,11 +25,11 @@ class RedactleGame {
         this.gameIsActive = false;
 
         this.ui = new UI(this);
-        this.logic = new Logic(this, this.ui);
+        this.logic = new Logic(this);
         this.utility = new Utility();
+        this.profileData = new ProfileData(this);
         this.wikiData = new WikiData(this);
-        this.profileData = new ProfileData(this.utility, this.logic);
-        this.startUp = new StartUp(this, this.logic, this.wikiData);
+        this.startUp = new StartUp(this, this.logic);
 
         this.init().then();
     }
@@ -40,8 +40,6 @@ class RedactleGame {
 
         const articlesName = this.profileData.articleName;
         await this.wikiData.fetchData(true, articlesName);
-
-        this.startUp.init();
 
         window.redactleGame = this;
     }

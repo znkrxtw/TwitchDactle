@@ -1,8 +1,9 @@
 class Logic {
 
-    constructor(game, ui) {
+    constructor(game) {
         this.game = game;
-        this.ui = ui;
+        this.ui = game.ui;
+        this.profileData = game.profileData;
 
         // expose methods on the game instance so existing callers keep working
         this.game.performGuess = (guessedWord, populate) => this.performGuess(guessedWord, populate);
@@ -46,7 +47,7 @@ class Logic {
                     this.guessedWords.push([normGuess, numHits, this.guessCounter]);
                     this.saveProgress();
                 }
-                this.logGuess([normGuess, numHits, this.guessCounter], populate);
+                this.ui.logGuess([normGuess, numHits, this.guessCounter], populate);
             } else {
                 const guess = $("tr[data-guess='" + normGuess + "']");
                 guess.addClass("table-secondary");
@@ -71,17 +72,16 @@ class Logic {
 
     selectArticlesStandard() {
         this.selectedArticles = 'standard';
-        this.game.saveProgress();
+        this.profileData.saveProgress();
     }
 
     selectArticlesCustom() {
         this.selectedArticles = 'custom';
-        this.saveProgress();
+        this.profileData.saveProgress();
     }
 
     getArticleName() {
-        var e = document.getElementById("selectArticle");
-        var value = e.value;
+        const value = document.getElementById("selectArticle").value;
         if (value === 'custom') {
             return customArticles[Math.floor(Math.random() * customArticles.length)];
         }

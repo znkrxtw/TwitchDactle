@@ -1,11 +1,10 @@
 class StartUp {
 
-    constructor(game, logic, wikiData) {
+    constructor(game, logic) {
         this.game = game;
         this.logic = logic;
-        this.wikiData = wikiData;
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', this.init);
+            document.addEventListener('DOMContentLoaded', () => this.init);
 
         } else {
             this.init();
@@ -47,113 +46,111 @@ class StartUp {
             }
         });
 
-        $('#hideZero').on('click', function () {
-            if ($(this).is(':checked')) game.hideZero(); else game.showZero();
+        document.getElementById('hideZero').addEventListener('change', function () {
+            if (this.checked) {
+                this.ui.hideZero();
+            } else {
+                this.ui.showZero();
+            }
+            this.profileData.saveProgress();
         });
 
-        $('#hideLog').on('click', function () {
-            if ($(this).is(':checked')) HideLog(); else ShowLog();
+        document.getElementById('autoPlural').addEventListener('change', function () {
+            this.game.pluralizing = this.checked;
+            this.game.saveProgress(this.game);
         });
 
-        $('#hidePopup').on('click', function () {
-            if ($(this).is(':checked')) HidePopup(); else ShowPopup();
+        document.getElementById('selectArticle').addEventListener('change', function () {
+            this.game.selectedArticles = this.value === 'custom' ? 'custom' : 'standard';
+            this.game.saveProgress(this.game);
         });
 
-        $('#autoPlural').on('click', function () {
-            game.pluralizing = $('#autoPlural').is(':checked');
-            game.saveProgress();
+        document.getElementById('streamName').addEventListener('change', function () {
+            this.game.streamName = this.value;
+            this.game.saveProgress(this.game);
         });
 
-        $('#selectArticle').on("change", function () {
-            game.selectedArticles = ($('#selectArticle').val() === 'custom') ? 'custom' : 'standard';
-            game.saveProgress();
-        });
-
-        $('#streamName').on("change", function () {
-            game.streamName = $('#streamName').val();
-            game.saveProgress();
-        });
-
-        $("#statsBtn").click(function () {
-            game.buildStats();
+        document.getElementById('statsBtn').addEventListener('click', function () {
+            this.game.buildStats();
             statsModal.show();
             document.querySelector("body").style.overflow = "hidden";
         });
 
-        $("#settingsBtn").click(function () {
+        document.getElementById('settingsBtn').addEventListener('click', function () {
             settingsModal.show();
             document.querySelector("body").style.overflow = "hidden";
         });
 
-        $("#infoBtn").click(function () {
+        document.getElementById('settingsBtn').addEventListener('click', function () {
             infoModal.show();
             document.querySelector("body").style.overflow = "hidden";
         });
 
-        $("#revealPageButton").click(function () {
+        document.getElementById('revealPageButton').addEventListener('click', function () {
             revealModal.show();
             document.querySelector("body").style.overflow = "hidden";
         });
 
-        $("#revealNumbersButton").click(function () {
-            game.revealNumbers();
+        document.getElementById('revealPageButton').addEventListener('click', function () {
+            this.game.revealNumbers();
+            this.profileData.saveProgress();
         });
 
-        $(".closeInfo").each(function () {
-            $(this).click(function () {
+        document.querySelectorAll('.closeInfo').forEach(function (el) {
+            el.addEventListener('click', function () {
                 infoModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             });
         });
 
-        $(".closeSettings").each(function () {
-            $(this).click(function () {
+        document.querySelectorAll('.closeSettings').forEach(function (el) {
+            el.addEventListener('click', function () {
                 settingsModal.hide();
                 document.querySelector("body").style.overflow = "auto";
-                connectStream();
-                game.saveProgress();
+                self.connectStream();
+                this.game.saveProgress();
             });
         });
 
-        $(".closeStats").each(function () {
-            $(this).click(function () {
+        document.querySelectorAll('.closeStats').forEach(function (el) {
+            el.addEventListener('click', function () {
                 statsModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             });
         });
 
-        $(".closeReveal").each(function () {
-            $(this).click(function () {
+        document.querySelectorAll('.closeReveal').forEach(function (el) {
+            el.addEventListener('click', function () {
                 revealModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             });
         });
 
-        $(".doReveal").each(function () {
-            $(this).click(function () {
-                game.winRound(false);
+        document.querySelectorAll('.doReveal').forEach(function (el) {
+            el.addEventListener('click', function () {
+                this.game.winRound(false);
                 revealModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             });
         });
 
-        $("#backToTop").click(function () {
+        document.getElementById('backToTop').addEventListener('click', function () {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
         });
 
-        $("#newGame").click(async function () {
-            await this.profileData.newGame(this.game);
+        document.getElementById('newGame').addEventListener('click', function () {
+            this.profileData.newGame(this.game);
         });
 
-        $("#hideNavBar").click(function () {
-            const navBarHeight = $('#navBar');
-            const navBarButton = $('#hideNavBar');
-            if (navBarHeight.css("display") !== "none") {
-                navBarHeight.css("display", "none");
+        document.getElementById('hideNavBar').addEventListener('click', function () {
+            const navBarHeight = document.getElementById('navBar');
+            const navBarButton = document.getElementById('hideNavBar');
+            if (navBarHeight.style.display !== "none") {
+                navBarHeight.style.display = "none";
                 navBarButton.text("v");
             } else {
-                navBarHeight.css("display", "flex");
+                navBarHeight.style.display = "flex";
                 navBarButton.text("^");
             }
         });
@@ -181,21 +178,22 @@ class StartUp {
         ComfyJS.onChat = (user, message) => {
             const firstWord = [message.split(' ')[0]];
             const pluralizing = $('#autoPlural').is(':checked');
-            EnterGuess(firstWord, pluralizing);
+            this.logic.enterGuess(firstWord, pluralizing);
         };
 
         ComfyJS.onCommand = (user, command) => {
-            if (command === "next" && game.pageRevealed === true) {
-                game.newGame();
+            if (command === "next" && this.game.pageRevealed === true) {
+                this.game.newGame();
             }
         };
 
-        //connectStream();
+        this.connectStream();
     }
 
+    //TODO make this better
     connectStream() {
-        if (game && game.save && game.save.prefs && game.save.prefs.streamName) {
-            ComfyJS.Init(game.save.prefs.streamName);
+        if (this.game && this.game.save && this.game.save.prefs && this.game.save.prefs.streamName) {
+            ComfyJS.Init(this.game.save.prefs.streamName);
         }
     }
 }

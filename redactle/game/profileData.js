@@ -1,8 +1,8 @@
 class ProfileData {
 
-    constructor(utility, logic) {
-        this.utility = utility;
-        this.logic = logic;
+    constructor(game) {
+        this.utility = game.utility;
+        this.logic = game.logic;
         this.saveString = "redactleSave";
         this.save = {}
 
