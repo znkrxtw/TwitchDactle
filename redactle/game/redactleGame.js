@@ -25,9 +25,9 @@ class RedactleGame {
         this.gameIsActive = false;
 
         this.ui = new UI(this);
-        this.logic = new Logic(this);
         this.utility = new Utility();
         this.profileData = new ProfileData(this);
+        this.logic = new Logic(this, this.ui, this.profileData);
         this.wikiData = new WikiData(this);
         this.startUp = new StartUp(this, this.logic);
 
@@ -38,8 +38,11 @@ class RedactleGame {
 
         await this.profileData.loadSave(this);
 
-        const articlesName = this.profileData.articleName;
-        await this.wikiData.fetchData(true, articlesName);
+        if(!this.profileData.articleName){
+            this.profileData.articleName = this.logic.getArticleName();
+        }
+
+        await this.wikiData.fetchData(true, this.profileData.articleName);
 
         window.redactleGame = this;
     }
@@ -49,7 +52,6 @@ class RedactleGame {
         this.wikiHolder = document.getElementById("wikiHolder");
         this.guessLogBody = document.getElementById("guessLogBody");
         this.statLogBody = document.getElementById("statsTable");
-
 
         //guesses
         this.highlightedGuess = document.querySelectorAll('.highlighted');

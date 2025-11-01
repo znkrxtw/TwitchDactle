@@ -1,11 +1,16 @@
 class StartUp {
 
-    constructor(game, logic) {
+    constructor(game) {
         this.game = game;
-        this.logic = logic;
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init);
+        this.logic = game.logic;
+        this.ui = game.ui;
+        this.profileData = game.profileData;
 
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () =>
+            {
+                this.init();
+            });
         } else {
             this.init();
         }
@@ -55,79 +60,79 @@ class StartUp {
             this.profileData.saveProgress();
         });
 
-        document.getElementById('autoPlural').addEventListener('change', function () {
-            this.game.pluralizing = this.checked;
+        document.getElementById('autoPlural').addEventListener('change', (event) => {
+            this.game.pluralizing = event.target.checked;
             this.game.saveProgress(this.game);
         });
 
-        document.getElementById('selectArticle').addEventListener('change', function () {
-            this.game.selectedArticles = this.value === 'custom' ? 'custom' : 'standard';
+        document.getElementById('selectArticle').addEventListener('change', (event) => {
+            this.game.selectedArticles = event.target.value === 'custom' ? 'custom' : 'standard';
             this.game.saveProgress(this.game);
         });
 
-        document.getElementById('streamName').addEventListener('change', function () {
-            this.game.streamName = this.value;
+        document.getElementById('streamName').addEventListener('change', (event) => {
+            this.game.streamName = event.target.value;
             this.game.saveProgress(this.game);
         });
 
-        document.getElementById('statsBtn').addEventListener('click', function () {
-            this.game.buildStats();
-            statsModal.show();
-            document.querySelector("body").style.overflow = "hidden";
-        });
-
-        document.getElementById('settingsBtn').addEventListener('click', function () {
-            settingsModal.show();
-            document.querySelector("body").style.overflow = "hidden";
-        });
-
-        document.getElementById('settingsBtn').addEventListener('click', function () {
+        document.getElementById('infoBtn').addEventListener('click', () => {
             infoModal.show();
             document.querySelector("body").style.overflow = "hidden";
         });
 
-        document.getElementById('revealPageButton').addEventListener('click', function () {
+        document.getElementById('statsBtn').addEventListener('click', () => {
+            this.ui.buildStats();
+            statsModal.show();
+            document.querySelector("body").style.overflow = "hidden";
+        });
+
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            settingsModal.show();
+            document.querySelector("body").style.overflow = "hidden";
+        });
+
+        document.getElementById('revealPageButton').addEventListener('click', () => {
             revealModal.show();
             document.querySelector("body").style.overflow = "hidden";
         });
 
-        document.getElementById('revealPageButton').addEventListener('click', function () {
+        document.getElementById('revealPageButton').addEventListener('click', () => {
             this.game.revealNumbers();
             this.profileData.saveProgress();
         });
 
-        document.querySelectorAll('.closeInfo').forEach(function (el) {
-            el.addEventListener('click', function () {
+        document.querySelectorAll('.closeInfo').forEach((element) => {
+            element.addEventListener('click', function () {
                 infoModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             });
         });
 
-        document.querySelectorAll('.closeSettings').forEach(function (el) {
-            el.addEventListener('click', function () {
+        document.querySelectorAll('.closeSettings').forEach((element) => {
+            element.addEventListener('click', () => {
                 settingsModal.hide();
                 document.querySelector("body").style.overflow = "auto";
-                self.connectStream();
+                this.connectStream();
                 this.game.saveProgress();
             });
         });
 
-        document.querySelectorAll('.closeStats').forEach(function (el) {
-            el.addEventListener('click', function () {
+        document.querySelectorAll('.closeStats').forEach(function (element) {
+            element.addEventListener('click', function () {
                 statsModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             });
         });
 
-        document.querySelectorAll('.closeReveal').forEach(function (el) {
-            el.addEventListener('click', function () {
+        document.querySelectorAll('.closeReveal').forEach(function (element) {
+            element.addEventListener('click', function () {
                 revealModal.hide();
                 document.querySelector("body").style.overflow = "auto";
             });
         });
 
-        document.querySelectorAll('.doReveal').forEach(function (el) {
-            el.addEventListener('click', function () {
+        document.querySelectorAll('.doReveal').forEach(function (element) {
+            element.addEventListener('click', function () {
                 this.game.winRound(false);
                 revealModal.hide();
                 document.querySelector("body").style.overflow = "auto";
@@ -155,7 +160,7 @@ class StartUp {
             }
         });
 
-        window.onclick = function (event) {
+        window.onclick = (event) => {
             if (event.target === document.getElementById("infoModal")) {
                 infoModal.hide();
                 document.querySelector("body").style.overflow = "auto";
@@ -163,7 +168,7 @@ class StartUp {
             if (event.target === document.getElementById("settingsModal")) {
                 settingsModal.hide();
                 document.querySelector("body").style.overflow = "auto";
-                connectStream();
+                this.connectStream();
             }
             if (event.target === document.getElementById("statsModal")) {
                 statsModal.hide();
@@ -190,10 +195,9 @@ class StartUp {
         this.connectStream();
     }
 
-    //TODO make this better
     connectStream() {
-        if (this.game && this.game.save && this.game.save.prefs && this.game.save.prefs.streamName) {
-            ComfyJS.Init(this.game.save.prefs.streamName);
+        if (this.profileData.streamName) {
+            ComfyJS.Init(this.profileData.streamName);
         }
     }
 }

@@ -2,7 +2,6 @@ class ProfileData {
 
     constructor(game) {
         this.utility = game.utility;
-        this.logic = game.logic;
         this.saveString = "redactleSave";
         this.save = {}
 
@@ -47,7 +46,7 @@ class ProfileData {
     newGame(game) {
         localStorage.clear();
         this.save.saveData.redactleIndex += 1;
-        this.save.saveData.articleName = this.logic.getArticleName();
+        this.save.saveData.articleName = "";
         this.save.saveData.guessedWords = [];
         this.initSave(game);
         game.baffled = [];
@@ -67,7 +66,7 @@ class ProfileData {
         this.loadSave(game);
     }
 
-    initSave(game) {
+    initSave() {
         this.save.saveData.gameWins = this.gameWins;
         this.save.saveData.gameScores = this.gameScores;
         this.save.saveData.gameAccuracy = this.gameAccuracy;
@@ -116,7 +115,7 @@ class ProfileData {
     createNewSave() {
         localStorage.clear();
         this.playerID = this.utility.uuidv4();
-        this.articleName = this.logic.getArticleName();
+        this.articleName = "";
         this.redactleIndex = 0;
         this.save = JSON.parse(JSON.stringify({
             "saveData": {
