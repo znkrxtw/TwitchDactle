@@ -2,14 +2,12 @@ class RedactleGame {
 
     constructor() {
 
-        this.getReferences();
-
         // game state
         this.baffled = [];
         this.baffledNumbers = [];
         this.answer = [];
-        this.ansStr = undefined;
         this.guessCounter = 0;
+        this.ansStr = undefined;
 
         this.currentlyHighlighted = undefined;
 
@@ -25,11 +23,12 @@ class RedactleGame {
         this.gameIsActive = false;
 
         this.ui = new UI(this);
+
         this.utility = new Utility();
         this.profileData = new ProfileData(this);
         this.logic = new Logic(this, this.ui, this.profileData);
         this.wikiData = new WikiData(this);
-        this.startUp = new StartUp(this, this.logic);
+        this.startUp = new StartUp(this);
 
         this.init().then();
     }
@@ -45,19 +44,6 @@ class RedactleGame {
         await this.wikiData.fetchData(true, this.profileData.articleName);
 
         window.redactleGame = this;
-    }
-
-    getReferences() {
-        // DOM references
-        this.wikiHolder = document.getElementById("wikiHolder");
-        this.guessLogBody = document.getElementById("guessLogBody");
-        this.statLogBody = document.getElementById("statsTable");
-
-        //guesses
-        this.highlightedGuess = document.querySelectorAll('.highlighted');
-        this.superHighlightedGuess = document.querySelectorAll('.superHighlighted');
-        this.guessBody = document.querySelectorAll('#guessLogBody .table-secondary');
-        this.userGuess = document.getElementById("userGuess");
     }
 }
 

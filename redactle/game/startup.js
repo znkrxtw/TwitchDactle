@@ -1,14 +1,14 @@
+//TODO move this to redactleGame?
 class StartUp {
 
     constructor(game) {
         this.game = game;
-        this.logic = game.logic;
         this.ui = game.ui;
+        this.logic = game.logic;
         this.profileData = game.profileData;
 
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () =>
-            {
+            document.addEventListener('DOMContentLoaded', () => {
                 this.init();
             });
         } else {
@@ -17,27 +17,25 @@ class StartUp {
     }
 
     init() {
-
         const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
         const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
         const statsModal = new bootstrap.Modal(document.getElementById('statsModal'));
         const revealModal = new bootstrap.Modal(document.getElementById('revealModal'));
 
         const input = document.getElementById("userGuess");
-        input.addEventListener("keyup", function (event) {
-            if (event.keyCode === 13 && event.shiftKey) {
+        input.addEventListener("keyup",  (event) => {
+            if (event.key === "Enter" && event.shiftKey) {
                 event.preventDefault();
-                const pluralizing = ($('#autoPlural').is(':checked') !== event.shiftKey);
-                if (document.getElementById("userGuess").value.trim() !== '') {
-                    const allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
+                const pluralizing = (this.profileData.pluralizing !== event.shiftKey);
+                if (input.value.trim() !== '') {
+                    const allGuesses = [input.value.replace(/\s/g, '')];
                     this.logic.enterGuess(allGuesses, pluralizing);
                 }
                 input.value = '';
-            } else if (event.keyCode === 13) {
-                const pluralizing = $('#autoPlural').is(':checked');
-                if (document.getElementById("userGuess").value.trim() !== '') {
-                    const allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
-                    this.logic.enterGuess(allGuesses, pluralizing);
+            } else if (event.key === "Enter") {
+                if (input.value.trim() !== '') {
+                    const allGuesses = [input.value.replace(/\s/g, '')];
+                    this.logic.enterGuess(allGuesses, this.profileData.pluralizing);
                 }
                 input.value = '';
             }
@@ -46,17 +44,12 @@ class StartUp {
         document.getElementById("submitGuess").addEventListener("click", () => {
             if (document.getElementById("userGuess").value.trim() !== '') {
                 const allGuesses = [document.getElementById("userGuess").value.replace(/\s/g, '')];
-                const pluralizing = $('#autoPlural').is(':checked');
-                this.logic.enterGuess(allGuesses, pluralizing);
+                this.logic.enterGuess(allGuesses, this.profileData.pluralizing);
             }
         });
 
-        document.getElementById('hideZero').addEventListener('change', function () {
-            if (this.checked) {
-                this.ui.hideZero();
-            } else {
-                this.ui.showZero();
-            }
+        document.getElementById('hideZero').addEventListener('change',  (event) => {
+            event.target.checked ? this.ui.hideZero(): this.ui.showZero();
             this.profileData.saveProgress();
         });
 
@@ -77,65 +70,65 @@ class StartUp {
 
         document.getElementById('infoBtn').addEventListener('click', () => {
             infoModal.show();
-            document.querySelector("body").style.overflow = "hidden";
+            document.body.style.overflow = "hidden";
         });
 
         document.getElementById('statsBtn').addEventListener('click', () => {
-            this.ui.buildStats();
+            this.logic.buildStats();
             statsModal.show();
-            document.querySelector("body").style.overflow = "hidden";
+            document.body.style.overflow = "hidden";
         });
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
             settingsModal.show();
-            document.querySelector("body").style.overflow = "hidden";
+            document.body.style.overflow = "hidden";
         });
 
         document.getElementById('revealPageButton').addEventListener('click', () => {
             revealModal.show();
-            document.querySelector("body").style.overflow = "hidden";
+            document.body.style.overflow = "hidden";
         });
 
-        document.getElementById('revealPageButton').addEventListener('click', () => {
+        document.getElementById('revealNumbersButton').addEventListener('click', () => {
             this.game.revealNumbers();
             this.profileData.saveProgress();
         });
 
         document.querySelectorAll('.closeInfo').forEach((element) => {
-            element.addEventListener('click', function () {
+            element.addEventListener('click',  () => {
                 infoModal.hide();
-                document.querySelector("body").style.overflow = "auto";
+                document.body.style.overflow = "auto";
             });
         });
 
         document.querySelectorAll('.closeSettings').forEach((element) => {
             element.addEventListener('click', () => {
                 settingsModal.hide();
-                document.querySelector("body").style.overflow = "auto";
+                document.body.style.overflow = "auto";
                 this.connectStream();
-                this.game.saveProgress();
+                this.profileData.saveProgress();
             });
         });
 
         document.querySelectorAll('.closeStats').forEach(function (element) {
             element.addEventListener('click', function () {
                 statsModal.hide();
-                document.querySelector("body").style.overflow = "auto";
+                document.body.style.overflow = "auto";
             });
         });
 
         document.querySelectorAll('.closeReveal').forEach(function (element) {
             element.addEventListener('click', function () {
                 revealModal.hide();
-                document.querySelector("body").style.overflow = "auto";
+                document.body.style.overflow = "auto";
             });
         });
 
-        document.querySelectorAll('.doReveal').forEach(function (element) {
-            element.addEventListener('click', function () {
+        document.querySelectorAll('.doReveal').forEach( (element) => {
+            element.addEventListener('click', () => {
                 this.game.winRound(false);
                 revealModal.hide();
-                document.querySelector("body").style.overflow = "auto";
+                document.body.style.overflow = "auto";
             });
         });
 
@@ -144,20 +137,16 @@ class StartUp {
             document.documentElement.scrollTop = 0;
         });
 
-        document.getElementById('newGame').addEventListener('click', function () {
+        document.getElementById('newGame').addEventListener('click',  () => {
             this.profileData.newGame(this.game);
         });
 
-        document.getElementById('hideNavBar').addEventListener('click', function () {
-            const navBarHeight = document.getElementById('navBar');
-            const navBarButton = document.getElementById('hideNavBar');
-            if (navBarHeight.style.display !== "none") {
-                navBarHeight.style.display = "none";
-                navBarButton.text("v");
-            } else {
-                navBarHeight.style.display = "flex";
-                navBarButton.text("^");
-            }
+        this.ui.navBarButton.addEventListener('click',  () => {
+            this.ui.navBarBrand.classList.toggle('hidden');
+            this.ui.navBarCollapse.classList.toggle('hidden');
+            this.ui.navBarButtonContainer.classList.toggle('shrink');
+            const isNavBarHidden = this.ui.navBar.classList.toggle('hidden');
+            this.ui.navBarButton.innerText = isNavBarHidden ? "↓" : "↑";
         });
 
         window.onclick = (event) => {

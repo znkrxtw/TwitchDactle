@@ -6,6 +6,8 @@
         this.profileData = game.profileData;
         this.ui = game.ui;
         this.logic = game.logic;
+
+
     }
 
     async fetchData(retry, artStr) {
@@ -20,8 +22,8 @@
             .then(receivedJson => {
                 this.conting = true;
                 const cleanText = receivedJson.parse.text.replace(/<img[^>]*>/g, "").replace(/<small>/g, '').replace(/<\/small>/g, '').replace(/–/g, '-').replace(/<audio.*<\/audio>/g, "");
-                this.wikiHolder.style.display = "none";
-                this.wikiHolder.innerHTML = cleanText;
+                this.ui.wikiHolder.style.display = "none";
+                this.ui.wikiHolder.innerHTML = cleanText;
                 const redirecting = document.getElementsByClassName('redirectMsg');
                 if (redirecting.length > 0) {
                     const redirectURL = document.querySelectorAll('.redirectText')[0].firstChild.firstChild.innerHTML.replace(/ /g, "_");
@@ -44,7 +46,7 @@
                             elements[0].removeChild(elements[0].children[i]);
                         }
                     }
-                    const all_bad_elements = this.game.wikiHolder.querySelectorAll("[rel='mw-deduplicated-inline-style'], [title='Name at birth'], [aria-labelledby='micro-periodic-table-title'], .barbox, .wikitable, .clade, .Expand_section, .nowrap, .IPA, .thumb, .mw-empty-elt, .mw-editsection, .nounderlines, .nomobile, .searchaux, #toc, .sidebar, .sistersitebox, .noexcerpt, #External_links, #Further_reading, .hatnote, .haudio, .portalbox, .mw-references-wrap, .infobox, .unsolved, .navbox, .metadata, .refbegin, .reflist, .mw-stack, #Notes, #References, .reference, .quotebox, .collapsible, .uncollapsed, .mw-collapsible, .mw-made-collapsible, .mbox-small, .mbox, #coordinates, .succession-box, .noprint, .mwe-math-element, .cs1-ws-icon");
+                    const all_bad_elements = this.ui.wikiHolder.querySelectorAll("[rel='mw-deduplicated-inline-style'], [title='Name at birth'], [aria-labelledby='micro-periodic-table-title'], .barbox, .wikitable, .clade, .Expand_section, .nowrap, .IPA, .thumb, .mw-empty-elt, .mw-editsection, .nounderlines, .nomobile, .searchaux, #toc, .sidebar, .sistersitebox, .noexcerpt, #External_links, #Further_reading, .hatnote, .haudio, .portalbox, .mw-references-wrap, .infobox, .unsolved, .navbox, .metadata, .refbegin, .reflist, .mw-stack, #Notes, #References, .reference, .quotebox, .collapsible, .uncollapsed, .mw-collapsible, .mw-made-collapsible, .mbox-small, .mbox, #coordinates, .succession-box, .noprint, .mwe-math-element, .cs1-ws-icon");
 
                     for (let i = 0; i < all_bad_elements.length; i++) {
                         all_bad_elements[i].remove();
@@ -58,7 +60,7 @@
                         }
                         parent.removeChild(bElement[0]);
                     }
-                    const aElement = this.wikiHolder.getElementsByTagName('a');
+                    const aElement = this.ui.wikiHolder.getElementsByTagName('a');
                     while (aElement.length) {
                         let parent = aElement[0].parentNode;
                         while (aElement[0].firstChild) {
@@ -95,8 +97,8 @@
                     elements[0].prepend(titleHolder);
 
                     this.ansStr = titleTxt.replace(/ *\([^)]*\) */g, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                    this.answer = this.ansStr.match(/\b(\w+'\w+|\w+)\b/g);
-                    this.answer = this.answer.filter(function (el) {
+                    this.game.answer = this.ansStr.match(/\b(\w+'\w+|\w+)\b/g);
+                    this.game.answer = this.game.answer.filter(function (el) {
                         return commonWords.indexOf(el) < 0;
                     });
 
@@ -111,11 +113,11 @@
 
                     elements[0].innerHTML = elements[0].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/(<style.*<\/style>)/g, "").replace(/(<span class="punctuation">.<\/span>)|(^|<\/?[^>]+>|\s+)|([^\s<]+)/g, '$1$2<span class="innerTxt">$3</span>').replace('<<span class="innerTxt">h1>', '<h1><span class="innerTxt">');
                     elements[0].querySelectorAll('*:empty').forEach(el => el.remove());
-                    this.wikiHolder.innerHTML = this.wikiHolder.innerHTML.replace(/<!--(?!>)[\S\s]*?-->/g, '');
+                    this.ui.wikiHolder.innerHTML = this.ui.wikiHolder.innerHTML.replace(/<!--(?!>)[\S\s]*?-->/g, '');
 
                     // make the check for rejection here
                     // repackage the words into a text and send it to rejectArticle
-                    const cleanerText = [...this.wikiHolder.getElementsByClassName("innerTxt")].reduce((text, item) => text + ' ' + item.textContent, "");
+                    const cleanerText = [...this.ui.wikiHolder.getElementsByClassName("innerTxt")].reduce((text, item) => text + ' ' + item.textContent, "");
                     if (rejectArticle(cleanerText)) {
                         // the article must be skipped
                         // wait 2 seconds and start a new game
@@ -166,18 +168,17 @@
                         this.profileData.saveProgress();
                     }
 
-                    this.wikiHolder.style.display = "flex";
+                    this.ui.wikiHolder.style.display = "flex";
                 }
             })
             .catch(err => {
-                console.error("Error in fetch", err);
-                alert("Something went wrong while loading the page. Try refreshing.");
+                console.error("Error in while getting article: ", err);
             });
     }
 
 
     extracted() {
-        const root = this.wikiHolder.querySelector('.mw-parser-output') || this.wikiHolder;
+        const root = this.ui.wikiHolder.querySelector('.mw-parser-output') || this.ui.wikiHolder;
         if (!root) return;
 
         // ensure storage arrays exist

@@ -1,7 +1,9 @@
 class ProfileData {
 
     constructor(game) {
+        this.game = game;
         this.utility = game.utility;
+        this.ui = game.ui;
         this.saveString = "redactleSave";
         this.save = {}
 
@@ -43,27 +45,28 @@ class ProfileData {
         localStorage.setItem(this.saveString, JSON.stringify(this.save));
     }
 
-    newGame(game) {
+    newGame() {
         localStorage.clear();
         this.save.saveData.redactleIndex += 1;
         this.save.saveData.articleName = "";
         this.save.saveData.guessedWords = [];
-        this.initSave(game);
-        game.baffled = [];
-        game.baffledNumbers = [];
-        game.answer = [];
-        game.guessCounter = 0;
-        game.hitCounter = 0;
-        game.currentAccuracy = -1;
-        game.clickThruIndex = 0;
-        game.clickThruNodes = [];
+        this.initSave();
+        this.game.baffled = [];
+        this.game.baffledNumbers = [];
+        this.game.answer = [];
+        this.game.guessCounter = 0;
+        this.game.hitCounter = 0;
+        this.game.currentAccuracy = -1;
+        this.game.clickThruIndex = 0;
+        this.game.clickThruNodes = [];
         this.save.saveData.numbersRevealed = false;
         this.save.saveData.pageRevealed = false;
         localStorage.setItem(this.saveString, JSON.stringify(this.save));
-        document.querySelector("#guessLogBody").empty();
+        this.ui.emptyGuessBody();
+
         document.getElementById("userGuess").disabled = false;
 
-        this.loadSave(game);
+        this.loadSave();
     }
 
     initSave() {

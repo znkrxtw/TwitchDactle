@@ -26,9 +26,9 @@
 </head>
 
 <body>
-<div class="super-parent-container">
+<header class="navbar-container">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" id="navBar">
-        <span class="navbar-brand mb-0 h1 mx-4">TwitchDactle</span>
+        <span class="navbar-brand mb-0 h1 mx-4" id="navbar-brand">TwitchDactle</span>
         <button class="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="">
             <span class="navbar-toggler-icon"></span>
@@ -54,38 +54,39 @@
             </button>
         </div>
     </nav>
-    <div class="parent-container">
-        <div class="hide-nav-bar">
-            <button class="hide-nav-bar-button" id="hideNavBar">^</button>
-        </div>
-        <div class="article-container">
-            <div class="container container-lg" id="winText"></div>
-            <div class="container container-lg" id="wikiHolder" style="display: flex;">
-                <div class="mw-parser-output">
-                </div>
+    <div class="hide-nav-bar" id="hideNavBarButtonContainer">
+        <button class="hide-nav-bar-button" id="hideNavBarButton">↑</button>
+    </div>
+</header>
+
+<div class="parent-container">
+    <div class="article-container">
+        <div class="container container-lg" id="winText"></div>
+        <div class="container container-lg" id="wikiHolder" style="display: flex;">
+            <div class="mw-parser-output">
             </div>
         </div>
-        <div class="guess-area">
-            <div class="input-container" id="inputHolder">
-                <div class="guess-container" id="inGrp">
-                     <button type="button" id="backToTop">▲ Top</button>
-                    <input type="text" aria-label="Text input" autofocus="" autocomplete="off" placeholder="Guess"
-                           id="userGuess">
-                    <button class="btn btn-guess" type="button" id="submitGuess">Guess</button>
-                </div>
+    </div>
+    <div class="guess-area">
+        <div class="input-container" id="inputHolder">
+            <div class="guess-container" id="inGrp">
+                <button type="button" id="backToTop">▲ Top</button>
+                <input type="text" aria-label="Text input" autofocus="" autocomplete="off" placeholder="Guess"
+                       id="userGuess">
+                <button class="btn btn-guess" type="button" id="submitGuess">Guess</button>
             </div>
-            <div class="guess-hit-container">
-                <table class="table table-dark table-hover" id="tableHolder">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Guess</th>
-                        <th scope="col">Hits</th>
-                    </tr>
-                    </thead>
-                    <tbody id="guessLogBody"></tbody>
-                </table>
-            </div>
+        </div>
+        <div class="guess-hit-container">
+            <table class="table table-dark table-hover" id="tableHolder">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Guess</th>
+                    <th scope="col">Hits</th>
+                </tr>
+                </thead>
+                <tbody id="guessLogBody"></tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -95,8 +96,7 @@
 text which appears when the navbar is hidden and which unhides the navbar 4. add button over the text at the bottom to
 go up top -->
 
-<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;"
-     aria-hidden="true">
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content text-dark">
             <div class="modal-header">
@@ -151,7 +151,7 @@ go up top -->
     </div>
 </div>
 
-<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
     <div class="modal-dialog">
         <div class="modal-content text-dark">
             <div class="modal-header">
@@ -198,7 +198,7 @@ go up top -->
     </div>
 </div>
 
-<div class="modal fade" id="statsModal" tabindex="-1" aria-labelledby="statsModalLabel" aria-hidden="true">
+<div class="modal fade" id="statsModal" tabindex="-1" aria-labelledby="statsModalLabel">
     <div class="modal-dialog">
         <div class="modal-content text-dark">
             <div class="modal-header">
@@ -227,7 +227,7 @@ go up top -->
     </div>
 </div>
 
-<div class="modal fade" id="revealModal" tabindex="-1" aria-labelledby="revealModalLabel" aria-hidden="true">
+<div class="modal fade" id="revealModal" tabindex="-1" aria-labelledby="revealModalLabel">
     <div class="modal-dialog">
         <div class="modal-content text-dark">
             <div class="modal-header">
