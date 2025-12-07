@@ -1,0 +1,46 @@
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close closeSettings" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div>
+                        <label>
+                            <input name="checkbox" type="checkbox" id="hideZero" class="configCheck"> Hide
+                            Guesses
+                            with 0 Hits<br><br>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input name="checkbox" type="checkbox" id="autoPlural" class="configCheck">
+                            Attempt to automatically pluralize and singularize guesses. There are
+                            certain edge cases (e.g. guessing a nonsense word like "asdf") where
+                            this will submit nonsense guesses.<br><br>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <select name="articles" id="selectArticle">
+                                <option value="standard">Top 10000 Articles</option>
+                                <option value="custom">Custom Articles</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label>Twitch Name:
+                            <input name="streamName" id="streamName" type="text">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary closeSettings" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

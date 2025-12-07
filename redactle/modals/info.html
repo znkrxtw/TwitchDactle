@@ -1,0 +1,54 @@
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoModalLabel">Welcome to Redactle!</h5>
+                <button type="button" class="btn-close closeInfo" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>How to Play</h5>
+                <ul>
+                    <li>Type a word into the input box and press Enter or the Guess button.</li>
+                    <li>All occurrences of that word will become unredacted in the article body.</li>
+                    <li>To win, figure out the title or subject of the article.</li>
+                </ul>
+                <h5>Tips and Quirks</h5>
+                <ul>
+                    <li>Each guess must be one word only (Guessing multiple words at a time will not work).</li>
+                    <li>
+                        <i>Most</i> Punctuation is automatically
+                        revealed in the article page. Some punctuation occasionally escapes
+                        Redactle's filter and becomes redacted.
+                    </li>
+                    <li>Guesses are case-<i>insensitive</i>, and letters with diacritics (é, ü, etc.) are
+                        considered
+                        to not have those diacritics.
+                    </li>
+                    <li>
+                        Shift+Enter will attempt to automatically
+                        pluralize or singularize your guess. There are certain edge cases (e.g.
+                        guessing a nonsense word like "asdf") where this will submit nonsense
+                        guesses.
+                    </li>
+                    <li>
+                        You will likely encounter some formatting and
+                        punctuation quirks. These are a result of stripping away certain
+                        characters and elements present in the original Wikipedia article that
+                        don't play nicely with Redactle.
+                    </li>
+                    <li>
+                        Many common words are automatically revealed for
+                        your convenience. The list includes most English prepositions and
+                        articles. Guessing these words does not count toward your score.
+                    </li>
+                    <li>Check the Settings menu for configuration options.</li>
+                </ul>
+                <p class="text-secondary">Version 1.0</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary closeInfo" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
